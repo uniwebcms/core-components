@@ -1,0 +1,66 @@
+{
+    "name": "@uniwebcms/core-components",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/bundle.js",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build:dev": "webpack --mode=development --watch",
+        "build": "webpack --mode=production",
+        "reinstall": "rm -rf ./node_modules && npm i",
+        "rebuild": "rm -rf ./dist && npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/uniwebcms/core-components.git"
+    },
+    "keywords": [
+        "uniweb"
+    ],
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/uniwebcms/core-components/issues"
+    },
+    "homepage": "https://github.com/uniwebcms/core-components#readme",
+    "devDependencies": {
+        "@babel/core": "^7.13.14",
+        "@babel/preset-env": "^7.13.12",
+        "@babel/preset-react": "^7.13.13",
+        "@svgr/webpack": "^5.5.0",
+        "@tailwindcss/nesting": "0.0.0-insiders.565cd3e",
+        "@uniwebcms/uniweb-tailwind-plugin": "^1.0.1",
+        "autoprefixer": "^10.4.13",
+        "babel-loader": "^8.2.2",
+        "cssnano": "^7.0.6",
+        "css-loader": "^5.2.0",
+        "postcss": "^8.4.20",
+        "postcss-loader": "^7.0.2",
+        "postcss-preset-env": "^7.8.3",
+        "sass": "^1.50.0",
+        "sass-loader": "^12.6.0",
+        "style-loader": "^2.0.0",
+        "webpack": "^5.74.0",
+        "webpack-bundle-analyzer": "^4.5.0",
+        "webpack-cli": "^4.10.0"
+    },
+    "dependencies": {
+        "@headlessui/react": "^1.7.3",
+        "@react-google-maps/api": "^2.19.1",
+        "@tailwindcss/typography": "^0.5.15",
+        "@uniwebcms/module-sdk": "^1.23.2",
+        "katex": "^0.16.11",
+        "prismjs": "^1.29.0",
+        "react-icons": "^4.11.0",
+        "react-katex": "^3.0.1",
+        "tailwindcss": "^3.4.13"
+    },
+    "peerDependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    }
+}

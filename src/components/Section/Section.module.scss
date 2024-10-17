@@ -1,0 +1,43 @@
+.SectionWrapper {
+    .Alert {
+        &:empty:before {
+            content: attr(placeholder);
+            color: #aaa;
+        }
+        &:not(:empty):focus:before {
+            content: '';
+        }
+    }
+    .DotDivider {
+        color: rgba(0, 0, 0, 0.68);
+        font-size: 30px;
+        letter-spacing: 0.6em;
+        --baseline-multiplier: 0.22;
+        --x-height-multiplier: 0.342;
+    }
+    .ImageCaption {
+        &:empty:before {
+            content: attr(placeholder);
+            color: #aaa;
+        }
+        &:not(:empty):focus:before {
+            content: '';
+        }
+    }
+
+    blockquote {
+        position: relative;
+        margin-bottom: 25px;
+        letter-spacing: 0.02rem;
+        line-height: 1.5em;
+        &:before {
+            content: '';
+            width: 3px;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: -28px;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "prettier.trailingComma": "none",
+    "prettier.singleQuote": true,
+    "prettier.printWidth": 100,
+    "cSpell.words": ["docufolio", "subpage", "subpages", "uniweb", "uniwebcms"]
+}
