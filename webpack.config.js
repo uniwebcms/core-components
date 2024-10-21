@@ -2,6 +2,7 @@ const path = require('path');
 const postpresetenv = require('postcss-preset-env');
 const autoprefixer = require('autoprefixer');
 const tailwindcss = require('tailwindcss');
+const postcssPrefixSelector = require('postcss-prefix-selector');
 
 module.exports = (_, argv) => {
     return {
@@ -58,6 +59,19 @@ module.exports = (_, argv) => {
                             options: {
                                 postcssOptions: {
                                     plugins: [
+                                        postcssPrefixSelector({
+                                            prefix: '.tw-core-component', // Add scope class
+                                            exclude: ['html', 'body'], // Exclude global elements
+                                            transform: (prefix, selector, prefixedSelector) => {
+                                                if (
+                                                    selector.startsWith('html') ||
+                                                    selector.startsWith('body')
+                                                ) {
+                                                    return selector; // Avoid scoping html and body selectors
+                                                }
+                                                return prefixedSelector;
+                                            }
+                                        }),
                                         postpresetenv,
                                         require('@tailwindcss/nesting'),
                                         tailwindcss('./tailwind.config.js'),

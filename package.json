@@ -1,6 +1,6 @@
 {
     "name": "@uniwebcms/core-components",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "",
     "main": "dist/bundle.js",
     "files": [
@@ -40,6 +40,7 @@
         "css-loader": "^5.2.0",
         "postcss": "^8.4.20",
         "postcss-loader": "^7.0.2",
+        "postcss-prefix-selector": "^2.1.0",
         "postcss-preset-env": "^7.8.3",
         "sass": "^1.50.0",
         "sass-loader": "^12.6.0",

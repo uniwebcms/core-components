@@ -13,12 +13,14 @@ export default function (props) {
     const parsedContent = buildArticleBlocks(website.parseLinksInArticle(content));
 
     return (
-        <div
-            className={twJoin(
-                'max-w-5xl mx-auto w-full prose prose-base lg:prose-lg px-6 lg:px-8',
-                styles.SectionWrapper
-            )}>
-            <Render {...props} content={parsedContent}></Render>
+        <div className='tw-core-component'>
+            <div
+                className={twJoin(
+                    'max-w-5xl mx-auto w-full prose prose-base lg:prose-lg px-6 lg:px-8',
+                    styles.SectionWrapper
+                )}>
+                <Render {...props} content={parsedContent}></Render>
+            </div>
         </div>
     );
 }
