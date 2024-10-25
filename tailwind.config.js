@@ -1,10 +1,6 @@
 module.exports = {
-    content: ['./src/**/*.{js,jsx}', './node_modules/@uniwebcms/**/*.{js,jsx}'],
-    plugins: [
-        require('@uniwebcms/uniweb-tailwind-plugin'),
-        './node_modules/@uniwebcms/uniweb-tailwind-plugin',
-        require('@tailwindcss/typography')
-    ],
+    content: ['./src/**/*.{js,jsx}'],
+    plugins: [require('@uniwebcms/uniweb-tailwind-plugin'), require('@tailwindcss/typography')],
     theme: {
         extend: {
             // You can add theme extensions here

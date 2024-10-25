@@ -1,5 +1,5 @@
 import React from 'react';
-import { twJoin } from '@uniwebcms/module-sdk';
+import { twJoin } from '../_utils';
 import Render from './Render';
 import { buildArticleBlocks } from './parser';
 import styles from './Section.module.scss';

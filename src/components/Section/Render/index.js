@@ -1,4 +1,4 @@
-import { stripTags } from '@uniwebcms/module-sdk';
+import { stripTags } from '../../_utils';
 import React from 'react';
 import Divider from './Divider';
 import Video from './Video';
@@ -25,8 +25,7 @@ const Render = function (props) {
                     <p
                         key={index}
                         dangerouslySetInnerHTML={{ __html: content }}
-                        style={{ textAlign: alignment }}
-                    ></p>
+                        style={{ textAlign: alignment }}></p>
                 );
             case 'heading':
                 const { level } = block;
@@ -37,8 +36,7 @@ const Render = function (props) {
                         key={index}
                         id={`Section${blockId}-${stripTags(content).replace(/\s/g, '-')}`}
                         style={{ textAlign: alignment }}
-                        dangerouslySetInnerHTML={{ __html: content }}
-                    ></Heading>
+                        dangerouslySetInnerHTML={{ __html: content }}></Heading>
                 );
             case 'image':
                 return <Image key={index} {...block} page={page} />;
@@ -83,7 +81,7 @@ const Render = function (props) {
                 return <Code key={index} {...block} />;
             case 'card-group': {
                 return (
-                    <div key={index} className="flex flex-wrap gap-6">
+                    <div key={index} className={'flex flex-wrap gap-6'}>
                         {content.map((c, i) => (
                             <Card key={`c_${i}`} {...c.attrs}></Card>
                         ))}

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { Profile } from '@uniwebcms/module-sdk';
+import { Profile } from '../_utils';
 import { InlineMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
 
@@ -16,12 +16,35 @@ const buildTextNode = (content) => {
 
         let isBold = marks.find((mark) => mark.type === 'bold');
         let isItalic = marks.find((mark) => mark.type === 'italic');
+        let isHighlight = marks.find((mark) => mark.type === 'highlight');
+
+        const textColor = marks.find((mark) => mark.type === 'textStyle')?.attrs?.color;
 
         let linkHref = marks.filter((mark) => mark.type === 'link')?.[0]?.attrs?.href;
 
+        let textStyle = '';
+
+        if (isHighlight) {
+            textStyle += 'background-color: var(--highlight);';
+        }
+
+        if (textColor) {
+            textStyle += `color: var(--${textColor});`;
+        }
+
+        textStyle = textStyle ? `style="${textStyle}"` : '';
+
         if (text) {
             let start =
-                isBold && isItalic ? '<strong><em>' : isBold ? '<strong>' : isItalic ? '<em>' : '';
+                isBold && isItalic
+                    ? `<strong><em ${textStyle}>`
+                    : isBold
+                    ? `<strong ${textStyle}>`
+                    : isItalic
+                    ? `<em ${textStyle}>`
+                    : textStyle
+                    ? `<span ${textStyle}>`
+                    : '';
 
             if (!linkStart && linkHref) {
                 start = `<a href="${linkHref}">` + start;
@@ -35,6 +58,8 @@ const buildTextNode = (content) => {
                     ? '</strong>'
                     : isItalic
                     ? '</em>'
+                    : textStyle
+                    ? '</span>'
                     : '';
 
             if (
@@ -218,31 +243,32 @@ export const buildArticleBlocks = (articleContent) => {
                 case 'card-group':
                     return {
                         type,
-                        content: content.map((item, i) => {
-                            if (item.attrs.type === 'document') {
-                                item.attrs.document = parseDocument(
-                                    item.attrs.document,
-                                    item.attrs.title,
-                                    i
-                                );
-                            } else {
-                                if (item.attrs.address) {
-                                    try {
-                                        const addressObj = JSON.parse(item.attrs.address);
-                                        item.attrs.address = addressObj;
-                                    } catch {}
+                        content:
+                            content?.map((item, i) => {
+                                if (item.attrs.type === 'document') {
+                                    item.attrs.document = parseDocument(
+                                        item.attrs.document,
+                                        item.attrs.title,
+                                        i
+                                    );
+                                } else {
+                                    if (item.attrs.address) {
+                                        try {
+                                            const addressObj = JSON.parse(item.attrs.address);
+                                            item.attrs.address = addressObj;
+                                        } catch {}
+                                    }
+
+                                    if (item.attrs.date) {
+                                        item.attrs.date = parseDate(item.attrs.date);
+                                    }
+                                    if (item.attrs.datetime) {
+                                        item.attrs.datetime = parseDate(item.attrs.datetime);
+                                    }
                                 }
 
-                                if (item.attrs.date) {
-                                    item.attrs.date = parseDate(item.attrs.date);
-                                }
-                                if (item.attrs.datetime) {
-                                    item.attrs.datetime = parseDate(item.attrs.datetime);
-                                }
-                            }
-
-                            return item;
-                        })
+                                return item;
+                            }) || []
                     };
                 case 'math_display':
                     return {

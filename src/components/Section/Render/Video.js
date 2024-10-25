@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaCompress, FaExpand } from 'react-icons/fa';
-import { Media, Image, website } from '@uniwebcms/module-sdk';
+import { twJoin, Media, Image, website } from '../../_utils';
 
 const youtubeRegex =
     /\b(?:https?:\/\/)?(?:(?:www|m)\.)?youtu(?:\.be\/|be\.com\/(?:watch(?:\?(?:(?:feature=player_embedded|app=desktop)&)?v=|\/)|v\/|oembed\?url=http%3A\/\/www\.youtube\.com\/watch\?v%3D|attribution_link\?a=[0-9A-Za-z\-_]{10,20}&u=(?:%2F|\/)watch%3Fv%3D|e(?:mbed)?\/|shorts\/)|be-nocookie\.com\/embed\/)([0-9A-Za-z\-_]{10,20})/;
@@ -83,14 +83,6 @@ export default function Video({ page, videoControl, ...video }) {
     const [thumbnail, setThumbnail] = useState(null);
     const [thumbnails, setThumbnails] = useState(Array(videos.length).fill(null));
 
-    const playerClasses = `${miniPlayer && 'fixed bottom-4 right-4 w-64 h-36 z-50'} ${
-        overlay && 'flex w-full max-w-6xl mx-auto bg-white shadow-lg'
-    }`;
-
-    const outerClasses = `${!overlay && 'absolute inset-0 z-10'} ${
-        overlay && 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75'
-    }`;
-
     useEffect(() => {
         async function fetchThumbnail() {
             const thumb = await getVideoThumbnail(video.src);
@@ -123,10 +115,10 @@ export default function Video({ page, videoControl, ...video }) {
 
     const Buttons = () =>
         videoControl ? (
-            <div className='flex space-x-3 mt-2'>
+            <div className='flex gap-x-4 mt-4'>
                 <button
                     onClick={toggleMiniPlayer}
-                    className='flex items-center px-2 py-1 bg-primary-100 text-primary-800 rounded-lg hover:bg-primary-800 hover:text-primary-100'>
+                    className='flex items-center px-4 py-2 rounded-lg'>
                     <FaCompress className='mr-2' />
                     <span className='text-sm md:text-base'>
                         {website.localize({
@@ -135,9 +127,7 @@ export default function Video({ page, videoControl, ...video }) {
                         })}
                     </span>
                 </button>
-                <button
-                    onClick={toggleOverlay}
-                    className='flex items-center px-2 py-1 bg-secondary-100 text-secondary-800 rounded-lg hover:bg-secondary-800 hover:text-secondary-100'>
+                <button onClick={toggleOverlay} className='flex items-center px-4 py-2 rounded-lg'>
                     <FaExpand className='mr-2' />
                     <span className='text-sm md:text-base'>
                         {website.localize({
@@ -154,16 +144,29 @@ export default function Video({ page, videoControl, ...video }) {
     );
 
     return (
-        <div className='not-prose mb-5 lg:mb-6'>
+        <div className='not-prose mb-6 lg:my-8'>
             <div className='relative'>
                 <div
-                    className={outerClasses}
+                    style={{
+                        inset: 0,
+                        backgroundColor: overlay ? 'rgba(0, 0, 0, 0.8)' : 'unset'
+                    }}
+                    className={twJoin(
+                        overlay ? 'fixed z-50 flex items-center justify-center' : 'absolute z-10'
+                    )}
                     onClick={(event) => {
                         if (event.target === event.currentTarget) {
                             toggleOverlay();
                         }
                     }}>
-                    <div className={playerClasses}>
+                    <div
+                        style={{
+                            backgroundColor: overlay ? 'white' : 'unset'
+                        }}
+                        className={twJoin(
+                            miniPlayer && 'fixed bottom-4 right-4 w-64 h-36 z-50',
+                            overlay && 'flex w-full max-w-6xl mx-auto shadow-lg'
+                        )}>
                         {/* Main Video Area */}
                         <div className={`flex-1 block`}>
                             <Media
@@ -199,7 +202,7 @@ export default function Video({ page, videoControl, ...video }) {
                         )}
                         {/* Additional Buttons */}
                         {overlay && (
-                            <div className='absolute bottom-4 left-1/2 transform -translate-x-1/2'>
+                            <div className='absolute bottom-4 left-0 w-full flex items-center justify-center'>
                                 <Buttons />
                             </div>
                         )}
