@@ -16,7 +16,7 @@ export default function (props) {
         <div className='tw-core-component'>
             <div
                 className={twJoin(
-                    'max-w-5xl mx-auto w-full prose prose-base lg:prose-lg px-6 lg:px-8',
+                    'max-w-5xl mx-auto w-full prose prose-base lg:prose-lg px-6 lg:px-8 py-4 lg:py-6',
                     styles.SectionWrapper
                 )}>
                 <Render {...props} content={parsedContent}></Render>

@@ -275,6 +275,12 @@ export const buildArticleBlocks = (articleContent) => {
                         type: 'math_display',
                         content: content[0].text
                     };
+                case 'button':
+                    return {
+                        type: 'button',
+                        content: buildTextNode(content),
+                        attrs
+                    };
             }
         })
         .filter((item) => item);

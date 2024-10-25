@@ -1,4 +1,4 @@
-import { stripTags } from '../../_utils';
+import { twJoin, stripTags } from '../../_utils';
 import React from 'react';
 import Divider from './Divider';
 import Video from './Video';
@@ -90,6 +90,20 @@ const Render = function (props) {
             }
             case 'math_display':
                 return <Math key={index} {...block} />;
+            case 'button':
+                const { style } = block.attrs;
+
+                return (
+                    <div key={index} className='mb-3 lg:mb-4'>
+                        <button
+                            type='button'
+                            className={twJoin(
+                                style === 'secondary' ? 'btn-secondary' : '',
+                                'px-2.5 py-1 lg:px-4 lg:py-2 border text-base lg:text-lg'
+                            )}
+                            dangerouslySetInnerHTML={{ __html: content }}></button>
+                    </div>
+                );
         }
     });
 };
