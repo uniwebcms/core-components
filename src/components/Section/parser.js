@@ -20,7 +20,9 @@ const buildTextNode = (content) => {
 
         const textColor = marks.find((mark) => mark.type === 'textStyle')?.attrs?.color;
 
-        let linkHref = marks.filter((mark) => mark.type === 'link')?.[0]?.attrs?.href;
+        let linkProps = marks.filter((mark) => mark.type === 'link')?.[0]?.attrs;
+
+        let linkHref = linkProps?.href;
 
         let textStyle = '';
 
@@ -48,7 +50,9 @@ const buildTextNode = (content) => {
 
             if (!linkStart && linkHref) {
                 const external =
-                    href.includes('https:') || href.startsWith('mailto:') || href.includes('http:');
+                    linkHref.includes('https:') ||
+                    linkHref.startsWith('mailto:') ||
+                    linkHref.includes('http:');
 
                 const fileExtensions = [
                     'pdf',
@@ -59,6 +63,7 @@ const buildTextNode = (content) => {
                     'ppt',
                     'pptx',
                     'jpg',
+                    'svg',
                     'jpeg',
                     'png',
                     'webp',
@@ -70,15 +75,20 @@ const buildTextNode = (content) => {
                 ];
 
                 // Extract the extension from the href
-                const extension = href.split('.').pop().toLowerCase();
+                const extension = linkHref.split('.').pop().toLowerCase();
 
                 // Check if the extracted extension matches any known file extensions
                 const isFileLink = fileExtensions.includes(extension);
 
+                let downloadLink = linkProps?.downloadLink || linkHref;
+
                 start =
                     `<a href="${linkHref}"${external ? ' target="_blank"' : ''}${
-                        isFileLink ? ' download' : ''
+                        isFileLink
+                            ? ` download onclick="event.preventDefault(); uniweb.downloadFile('${downloadLink}');return false;"`
+                            : ''
                     }>` + start;
+
                 linkStart = linkHref;
             }
 
