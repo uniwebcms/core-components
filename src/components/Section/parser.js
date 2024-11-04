@@ -47,7 +47,44 @@ const buildTextNode = (content) => {
                     : '';
 
             if (!linkStart && linkHref) {
-                start = `<a href="${linkHref}">` + start;
+                const external =
+                    href.includes('https:') || href.startsWith('mailto:') || href.includes('http:');
+
+                const fileExtensions = [
+                    'pdf',
+                    'doc',
+                    'docx',
+                    'xls',
+                    'xlsx',
+                    'ppt',
+                    'pptx',
+                    'jpg',
+                    'jpeg',
+                    'png',
+                    'webp',
+                    'gif',
+                    'bmp',
+                    'zip',
+                    'rar',
+                    '7z',
+                    'tar',
+                    'gz',
+                    'mp4',
+                    'mp3',
+                    'wav',
+                    'mov'
+                ];
+
+                // Extract the extension from the href
+                const extension = href.split('.').pop().toLowerCase();
+
+                // Check if the extracted extension matches any known file extensions
+                const isFileLink = fileExtensions.includes(extension);
+
+                start =
+                    `<a href="${linkHref}"${external ? ' target="_blank"' : ''}${
+                        isFileLink ? ' download' : ''
+                    }>` + start;
                 linkStart = linkHref;
             }
 
