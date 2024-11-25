@@ -65,7 +65,12 @@ export default function Card(props) {
 const Event = (props) => {
     const { title, caption, href, address, datetime, contact } = props;
 
-    const cleanedContact = contact ? contact.replace(/[^+\d]/g, '') : null;
+    let phoneNumber, extension, cleanedPhoneNum;
+
+    if (contact) {
+        [phoneNumber, extension] = contact.split('|').map((part) => part.trim());
+        cleanedPhoneNum = phoneNumber.replace(/[^+\d]/g, '');
+    }
 
     const Wrapper = href ? Link : 'div';
     const wrapperProps = href ? { to: href } : {};
@@ -92,13 +97,18 @@ const Event = (props) => {
                 </p>
             ) : null}
             {contact && (
-                <a
-                    href={`tel:${cleanedContact}`}
-                    className={
-                        'block mt-2 text-sm lg:text-base text-text-color-80 hover:text-link-color'
-                    }>
-                    {contact}
-                </a>
+                <span className='block mt-2 text-sm lg:text-base text-text-color-80'>
+                    {href ? (
+                        <span>{phoneNumber}</span>
+                    ) : (
+                        <a
+                            href={`tel:${cleanedPhoneNum}`}
+                            className='text-inherit hover:text-link-color'>
+                            {phoneNumber}
+                        </a>
+                    )}
+                    {extension && <span> ext. {extension}</span>}
+                </span>
             )}
         </Wrapper>
     );
@@ -107,7 +117,12 @@ const Event = (props) => {
 const Address = (props) => {
     const { title, caption, href, address, date, contact } = props;
 
-    const cleanedContact = contact ? contact.replace(/[^+\d]/g, '') : null;
+    let phoneNumber, extension, cleanedPhoneNum;
+
+    if (contact) {
+        [phoneNumber, extension] = contact.split('|').map((part) => part.trim());
+        cleanedPhoneNum = phoneNumber.replace(/[^+\d]/g, '');
+    }
 
     const Wrapper = href ? Link : 'div';
     const wrapperProps = href ? { to: href } : {};
@@ -135,11 +150,18 @@ const Address = (props) => {
                     </p>
                 ) : null}
                 {contact && (
-                    <a
-                        href={`tel:${cleanedContact}`}
-                        className='block mt-2 text-sm lg:text-base text-text-color-80 hover:text-link-color'>
-                        {contact}
-                    </a>
+                    <span className='block mt-2 text-sm lg:text-base text-text-color-80'>
+                        {href ? (
+                            <span>{phoneNumber}</span>
+                        ) : (
+                            <a
+                                href={`tel:${cleanedPhoneNum}`}
+                                className='text-inherit hover:text-link-color'>
+                                {phoneNumber}
+                            </a>
+                        )}
+                        {extension && <span> ext. {extension}</span>}
+                    </span>
                 )}
             </div>
             <div className='w-full h-48 md:h-auto md:flex-1 md:min-h-[192px] rounded-md overflow-hidden shadow-md'>
