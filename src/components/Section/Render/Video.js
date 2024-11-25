@@ -46,6 +46,9 @@ export default function Video({ page, videoControl, ...video }) {
     const sections = page.blockGroups.body;
     const videos = getVideos(sections);
 
+    let caption = video?.caption || '';
+    caption = stripTags(caption);
+
     const [src, setSrc] = useState(video.src);
     const [currentVideo, setCurrentVideo] = useState(video);
     const [miniPlayer, setMiniPlayer] = useState(false);
@@ -83,6 +86,16 @@ export default function Video({ page, videoControl, ...video }) {
     const [thumbnail, setThumbnail] = useState(null);
     const [thumbnails, setThumbnails] = useState(Array(videos.length).fill(null));
 
+    const playerClasses = twJoin(
+        miniPlayer && 'fixed bottom-4 right-4 w-64 h-36 z-50',
+        overlay && 'flex w-full max-w-6xl mx-auto bg-white shadow-lg'
+    );
+
+    const outerClasses = twJoin(
+        !overlay && 'absolute inset-0 z-10',
+        overlay && 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75'
+    );
+
     useEffect(() => {
         async function fetchThumbnail() {
             const thumb = await getVideoThumbnail(video.src);
@@ -115,21 +128,22 @@ export default function Video({ page, videoControl, ...video }) {
 
     const Buttons = () =>
         videoControl ? (
-            <div className='flex gap-x-4 mt-4'>
+            <div className="flex space-x-4 mt-4">
                 <button
                     onClick={toggleMiniPlayer}
-                    className='flex items-center px-4 py-2 rounded-lg'>
-                    <FaCompress className='mr-2' />
-                    <span className='text-sm md:text-base'>
+                    className="flex items-center px-4 py-2 rounded-lg"
+                >
+                    <FaCompress className="mr-2" />
+                    <span className="text-sm md:text-base">
                         {website.localize({
                             en: 'Mini Player',
                             es: 'Reproductor Mini'
                         })}
                     </span>
                 </button>
-                <button onClick={toggleOverlay} className='flex items-center px-4 py-2 rounded-lg'>
-                    <FaExpand className='mr-2' />
-                    <span className='text-sm md:text-base'>
+                <button onClick={toggleOverlay} className="flex items-center px-4 py-2 rounded-lg">
+                    <FaExpand className="mr-2" />
+                    <span className="text-sm md:text-base">
                         {website.localize({
                             en: 'Overlay',
                             es: 'Superposición'
@@ -140,45 +154,33 @@ export default function Video({ page, videoControl, ...video }) {
         ) : null;
 
     const FakeBlock = () => (
-        <Image className='relative z-0 flex-1 block m-0' {...{ profile, url: ogThumbnail }} />
+        <Image className="relative z-0 flex-1 block m-0" {...{ profile, url: ogThumbnail }} />
     );
 
     return (
-        <div className='not-prose mb-6 lg:my-8'>
-            <div className='relative'>
+        <div className="not-prose mb-6 lg:my-8">
+            <div className="relative">
                 <div
-                    style={{
-                        inset: 0,
-                        backgroundColor: overlay ? 'rgba(0, 0, 0, 0.8)' : 'unset'
-                    }}
-                    className={twJoin(
-                        overlay ? 'fixed z-50 flex items-center justify-center' : 'absolute z-10'
-                    )}
+                    className={outerClasses}
                     onClick={(event) => {
                         if (event.target === event.currentTarget) {
                             toggleOverlay();
                         }
-                    }}>
-                    <div
-                        style={{
-                            backgroundColor: overlay ? 'white' : 'unset'
-                        }}
-                        className={twJoin(
-                            miniPlayer && 'fixed bottom-4 right-4 w-64 h-36 z-50',
-                            overlay && 'flex w-full max-w-6xl mx-auto shadow-lg'
-                        )}>
+                    }}
+                >
+                    <div className={playerClasses}>
                         {/* Main Video Area */}
                         <div className={`flex-1 block`}>
                             <Media
-                                className='mt-0'
+                                className="mt-0"
                                 media={currentVideo}
                                 {...(thumbnail && { thumbnail: { url: thumbnail } })}
                             />
                         </div>
                         {/* Thumbnail Grid */}
                         {overlay && (
-                            <div className='w-1/4 p-4 overflow-y-auto bg-gray-800 flex items-center justify-center'>
-                                <div className='grid grid-cols-1 gap-4'>
+                            <div className="w-1/4 p-4 overflow-y-auto bg-gray-800 flex items-center justify-center">
+                                <div className="grid grid-cols-1 gap-4">
                                     {videos.map((video, index) => {
                                         const currentThumbnail = thumbnails[index];
                                         return (
@@ -189,9 +191,10 @@ export default function Video({ page, videoControl, ...video }) {
                                                         ? 'border-2 border-indigo-500'
                                                         : ''
                                                 }`}
-                                                onClick={changeVideo(video)}>
+                                                onClick={changeVideo(video)}
+                                            >
                                                 <Image
-                                                    className='w-full h-auto object-contain rounded-md m-2'
+                                                    className="w-full h-auto object-contain rounded-md m-2"
                                                     {...{ profile, url: currentThumbnail }}
                                                 />
                                             </div>
@@ -202,11 +205,18 @@ export default function Video({ page, videoControl, ...video }) {
                         )}
                         {/* Additional Buttons */}
                         {overlay && (
-                            <div className='absolute bottom-4 left-0 w-full flex items-center justify-center'>
+                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                                 <Buttons />
                             </div>
                         )}
                     </div>
+                    {caption ? (
+                        <div
+                            className={`block outline-none text-primary-80 border-none text-sm text-center mt-1`}
+                        >
+                            {caption}
+                        </div>
+                    ) : null}
                 </div>
                 {/* Conditional Rendering of FakeBlock and Buttons */}
                 {<FakeBlock />}

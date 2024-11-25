@@ -41,7 +41,7 @@ const Render = function (props) {
             case 'image':
                 return <Image key={index} {...block} page={page} />;
             case 'video':
-                const { video_control: videoControl = false } = block.getBlockProperties();
+                const { video_control: videoControl = false } = pageBlock.getBlockProperties();
                 return <Video key={index} {...block} page={page} videoControl={videoControl} />;
             case 'warning':
                 return <Warning key={index} {...block} />;
