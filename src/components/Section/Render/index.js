@@ -9,10 +9,7 @@ import Code from './Code';
 import Math from './Math';
 
 const Render = function (props) {
-    const { block, content, page } = props;
-
-    const blockId = block.id;
-    const { video_control: videoControl = false } = block.getBlockProperties();
+    const { block: pageBlock, content, page } = props;
 
     if (!content || !content.length) return null;
 
@@ -25,10 +22,12 @@ const Render = function (props) {
                     <p
                         key={index}
                         dangerouslySetInnerHTML={{ __html: content }}
-                        style={{ textAlign: alignment }}></p>
+                        style={{ textAlign: alignment }}
+                    ></p>
                 );
             case 'heading':
                 const { level } = block;
+                const blockId = pageBlock?.id || '';
                 const Heading = `h${level}`;
 
                 return (
@@ -36,11 +35,13 @@ const Render = function (props) {
                         key={index}
                         id={`Section${blockId}-${stripTags(content).replace(/\s/g, '-')}`}
                         style={{ textAlign: alignment }}
-                        dangerouslySetInnerHTML={{ __html: content }}></Heading>
+                        dangerouslySetInnerHTML={{ __html: content }}
+                    ></Heading>
                 );
             case 'image':
                 return <Image key={index} {...block} page={page} />;
             case 'video':
+                const { video_control: videoControl = false } = pageBlock.getBlockProperties();
                 return <Video key={index} {...block} page={page} videoControl={videoControl} />;
             case 'warning':
                 return <Warning key={index} {...block} />;
@@ -94,16 +95,19 @@ const Render = function (props) {
                 const { style } = block.attrs;
 
                 return (
-                    <div key={index} className='mb-3 lg:mb-4'>
+                    <div key={index} className="mb-3 lg:mb-4">
                         <button
-                            type='button'
+                            type="button"
                             className={twJoin(
                                 style === 'secondary' ? 'btn-secondary' : '',
                                 'px-2.5 py-1 lg:px-4 lg:py-2 border text-base lg:text-lg'
                             )}
-                            dangerouslySetInnerHTML={{ __html: content }}></button>
+                            dangerouslySetInnerHTML={{ __html: content }}
+                        ></button>
                     </div>
                 );
+            default:
+                return null;
         }
     });
 };
