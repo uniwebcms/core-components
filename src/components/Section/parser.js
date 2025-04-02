@@ -3,6 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 import { Profile } from '../_utils';
 import { InlineMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
+import Icon from '../Icon';
 
 const buildTextNode = (content) => {
     let data = '';
@@ -80,12 +81,10 @@ const buildTextNode = (content) => {
                 // Check if the extracted extension matches any known file extensions
                 const isFileLink = fileExtensions.includes(extension);
 
-                let downloadLink = linkProps?.downloadLink || linkHref;
-
                 start =
                     `<a href="${linkHref}"${external ? ' target="_blank"' : ''}${
                         isFileLink
-                            ? ` download onclick="event.preventDefault(); uniweb.downloadFile('${downloadLink}');return false;"`
+                            ? ` download onclick="event.preventDefault(); uniweb.downloadFile('${linkHref}');return false;"`
                             : ''
                     }>` + start;
 
@@ -122,6 +121,26 @@ const buildTextNode = (content) => {
             const mathHtml = ReactDOMServer.renderToStaticMarkup(math);
 
             data += mathHtml;
+        } else if (type === 'UniwebIcon') {
+            if (item.attrs?.svg || item.attrs?.url) {
+                if (!item.attrs?.className && !item.attrs?.size) {
+                    item.attrs.size = '1em';
+                }
+
+                const iconHtml = ReactDOMServer.renderToStaticMarkup(
+                    <span
+                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}
+                    >
+                        <Icon {...item.attrs} />
+                    </span>
+                );
+
+                data += iconHtml;
+            }
+        } else if (type === 'emoji') {
+            if (item.attrs?.emoji) {
+                data += item.attrs.emoji;
+            }
         }
     });
 
@@ -228,6 +247,7 @@ export const buildArticleBlocks = (articleContent) => {
 
             switch (type) {
                 case 'paragraph':
+                    // make empty paragraph available, users may expect to use that to control spacing
                     // if (!content) return null;
 
                     return {

@@ -1,8 +1,8 @@
-import Link from './Link';
-import Image from './Image';
-import Asset from './Asset';
-import FileLogo from './FileLogo';
-import Media from './Media';
+import Link from '../Link';
+import Image from '../Image';
+import Asset from '../Asset';
+import FileLogo from '../FileLogo';
+import Media from '../Media';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 const stripTags = (htmlString) => {

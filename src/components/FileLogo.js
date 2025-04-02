@@ -41,7 +41,8 @@ export default function (props) {
         return (
             <BsImageFill
                 style={{ width: `${4 * parseInt(size)}px`, height: `${4 * parseInt(size)}px` }}
-                className='flex-shrink-0'></BsImageFill>
+                className="flex-shrink-0"
+            ></BsImageFill>
         );
 
     if (['xlsx', 'xlsm', 'xlsb', 'xls'].includes(ext)) {
@@ -63,6 +64,7 @@ export default function (props) {
     return (
         <Render
             style={{ width: `${4 * parseInt(size)}px`, height: `${4 * parseInt(size)}px` }}
-            className='flex-shrink-0'></Render>
+            className="flex-shrink-0"
+        ></Render>
     );
 }

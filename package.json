@@ -1,6 +1,6 @@
 {
     "name": "@uniwebcms/core-components",
-    "version": "1.5.6",
+    "version": "1.5.8",
     "description": "",
     "main": "dist/bundle.js",
     "files": [
@@ -55,6 +55,7 @@
     "dependencies": {
         "@headlessui/react": "^1.7.3",
         "@react-google-maps/api": "^2.19.1",
+        "@popperjs/core": "^2.10.1",
         "katex": "^0.16.11",
         "prismjs": "^1.29.0",
         "react-icons": "^4.11.0",

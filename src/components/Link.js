@@ -8,6 +8,38 @@ const website = uniweb.activeWebsite;
 
 const { Link } = website.getRoutingComponents();
 
+// Check if the href is a file link
+const fileExtensions = [
+    'pdf',
+    'doc',
+    'docx',
+    'xls',
+    'xlsx',
+    'ppt',
+    'pptx',
+    'jpg',
+    'svg',
+    'jpeg',
+    'png',
+    'webp',
+    'gif',
+    'mp4',
+    'mp3',
+    'wav',
+    'mov',
+    'zip'
+];
+
+function isFileLink(href) {
+    try {
+        const url = new URL(href, window.location.origin); // Handle relative URLs
+        const extension = url.pathname.split('.').pop().toLowerCase();
+        return fileExtensions.includes(extension);
+    } catch (error) {
+        return false; // Invalid URL
+    }
+}
+
 /**
  * Create a React DOM router Link that wraps content that functions as a
  * link to a given target page.
@@ -38,5 +70,27 @@ const { Link } = website.getRoutingComponents();
  * @returns {function} A Link component.
  */
 export default function ({ to, href, ...props }) {
-    return <Link to={href || to} {...props} />;
+    const linkHref = href || to;
+
+    // Check if the extracted extension matches any known file extensions
+    if (isFileLink(linkHref)) {
+        // return `<a href=${linkHref} target='_blank' download onclick="event.preventDefault(); uniweb.downloadFile('${linkHref}');return false;">${props.children}</a>`;
+
+        return (
+            <a
+                href={linkHref}
+                target="_blank"
+                download
+                onClick={(e) => {
+                    e.preventDefault();
+                    uniweb.downloadFile(linkHref);
+                    return false;
+                }}
+            >
+                {props.children}
+            </a>
+        );
+    }
+
+    return <Link to={linkHref} {...props} />;
 }
