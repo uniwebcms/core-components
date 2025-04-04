@@ -129,8 +129,7 @@ const buildTextNode = (content) => {
 
                 const iconHtml = ReactDOMServer.renderToStaticMarkup(
                     <span
-                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}
-                    >
+                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}>
                         <Icon {...item.attrs} />
                     </span>
                 );
@@ -235,6 +234,25 @@ const parseDocument = (document, title, index) => {
         return null;
     }
 };
+
+function parseTableContent(content) {
+    return content.map((row) => {
+        const { type, content: rowContent } = row;
+
+        return {
+            type,
+            content: rowContent.map((cell) => {
+                const { type, attrs } = cell;
+
+                return {
+                    type,
+                    content: buildArticleBlocks(cell),
+                    attrs
+                };
+            })
+        };
+    });
+}
 
 export const buildArticleBlocks = (articleContent) => {
     const { content: docContent } = articleContent;
@@ -342,6 +360,31 @@ export const buildArticleBlocks = (articleContent) => {
                         content: buildTextNode(content),
                         attrs
                     };
+                case 'table':
+                    return {
+                        type: 'table',
+                        content: parseTableContent(content),
+                        attrs
+                    };
+                case 'details': {
+                    return {
+                        type: 'details',
+                        content: content.map((item) => {
+                            const { type, content } = item;
+
+                            console.log('details item', item);
+
+                            return {
+                                type,
+                                content:
+                                    type === 'detailsSummary'
+                                        ? content[0].text
+                                        : buildArticleBlocks(item)
+                            };
+                        }),
+                        attrs
+                    };
+                }
             }
         })
         .filter((item) => item);
