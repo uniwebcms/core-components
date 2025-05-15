@@ -129,7 +129,8 @@ const buildTextNode = (content) => {
 
                 const iconHtml = ReactDOMServer.renderToStaticMarkup(
                     <span
-                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}>
+                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}
+                    >
                         <Icon {...item.attrs} />
                     </span>
                 );
@@ -140,6 +141,8 @@ const buildTextNode = (content) => {
             if (item.attrs?.emoji) {
                 data += item.attrs.emoji;
             }
+        } else if (type === 'hardBreak') {
+            data += '<br/>';
         }
     });
 
