@@ -124,7 +124,7 @@ export default function (props) {
         imgProps.style = style;
     }
 
-    body = <img {...imgProps} />;
+    let body = <img {...imgProps} />;
 
     if (href) {
         return <Link to={website.makeHref(href)}>{body}</Link>;
