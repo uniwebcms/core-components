@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styles from '../Section.module.scss';
-import { Image } from '../../_utils';
+import { Image, website } from '../../_utils';
 
 const imageCaptionStyle = `block outline-none border-none text-gray-500 text-sm text-center ${styles.ImageCaption}}`;
 
 export default function ImageBlock(props) {
-    const { url, caption, direction, filter, info, targetId, aspect_ratio, page } = props;
+    const { url, caption, direction, filter, info, targetId, aspect_ratio, page, href } = props;
 
     if (targetId) info.contentId = targetId;
 
@@ -39,6 +39,14 @@ export default function ImageBlock(props) {
 
     let imgProps = identifier ? { value: identifier } : { url: url };
 
+    if (href) {
+        imgProps = {
+            ...imgProps,
+            href,
+            website
+        };
+    }
+
     const inner = (
         <>
             <div
@@ -46,9 +54,10 @@ export default function ImageBlock(props) {
                 style={{
                     maxHeight,
                     maxWidth
-                }}>
+                }}
+            >
                 <div
-                    className='aspect-ratio-fill'
+                    className="aspect-ratio-fill"
                     style={{
                         paddingBottom: imgRatio?.pb || `${imgRatio.ratio}%`
                     }}
@@ -56,7 +65,8 @@ export default function ImageBlock(props) {
                 <Image
                     profile={page.getPageProfile()}
                     {...imgProps}
-                    className={`not-prose absolute top-0 left-0 w-full h-auto block ${imgFilter}`}></Image>
+                    className={`not-prose absolute top-0 left-0 w-full h-auto block ${imgFilter}`}
+                ></Image>
             </div>
 
             <figcaption className={`text-center! mt-2.5 tracking-normal text-sm outline-none z-50`}>
@@ -72,15 +82,18 @@ export default function ImageBlock(props) {
                     className={`relative w-full mx-auto flex justify-center ${imgFilter}`}
                     style={{
                         maxWidth: '896px'
-                    }}>
+                    }}
+                >
                     <Image
                         profile={page.getPageProfile()}
                         {...imgProps}
-                        className={`not-prose block max-h-[120px] w-auto`}></Image>
+                        className={`not-prose block max-h-[120px] w-auto`}
+                    ></Image>
                 </div>
 
                 <figcaption
-                    className={`text-center! mt-2.5 tracking-normal text-sm outline-none z-50`}>
+                    className={`text-center! mt-2.5 tracking-normal text-sm outline-none z-50`}
+                >
                     {caption ? <div className={`${imageCaptionStyle}`}>{caption}</div> : null}
                 </figcaption>
             </figure>
@@ -100,11 +113,13 @@ export default function ImageBlock(props) {
                 className={`relative clear-both outline-none z-10 mt-8 mx-auto`}
                 style={{
                     maxWidth: '896px'
-                }}>
+                }}
+            >
                 <div
                     className={`md:w-3/4  ${
                         direction === 'left' ? 'fload-left' : 'float-right'
-                    } relative mb-6 ${marginStyle}`}>
+                    } relative mb-6 ${marginStyle}`}
+                >
                     {inner}
                 </div>
             </figure>
@@ -131,7 +146,8 @@ export default function ImageBlock(props) {
                 style={{
                     maxWidth,
                     maxHeight
-                }}>
+                }}
+            >
                 {inner}
             </figure>
         );

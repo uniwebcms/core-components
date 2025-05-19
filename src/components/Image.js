@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
+import Link from './Link';
 
 /**
  * Create a image with given profile and type.
@@ -26,6 +27,7 @@ import { twMerge } from 'tailwind-merge';
  * @prop {string} className - Additional tailwind class names.
  * @prop {string} value - The value of the asset when type is not 'avatar' or 'banner'.
  * @prop {string} src - Another option of the value of the asset when type is not 'avatar' or 'banner'.
+ * @prop {string} href - The href of the asset, make it clickable.
  * @prop {string} alt - The alt of the asset when type is not 'avatar' or 'banner'.
  * @prop {bool} [ariaHidden=false] - True for 'aria-hidden="true"'.
  * @prop {string} [loading="lazy"] - The React loading type used.
@@ -45,7 +47,9 @@ export default function (props) {
         customStyle = false,
         ariaHidden = false,
         loading = 'lazy',
-        filter = null
+        filter = null,
+        href = null,
+        website
     } = props;
 
     let style = props.style || null;
@@ -120,5 +124,11 @@ export default function (props) {
         imgProps.style = style;
     }
 
-    return <img {...imgProps} />;
+    body = <img {...imgProps} />;
+
+    if (href) {
+        return <Link to={website.makeHref(href)}>{body}</Link>;
+    } else {
+        return body;
+    }
 }
