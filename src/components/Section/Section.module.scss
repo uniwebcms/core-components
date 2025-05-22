@@ -8,13 +8,6 @@
             content: '';
         }
     }
-    .DotDivider {
-        color: rgba(0, 0, 0, 0.68);
-        font-size: 30px;
-        letter-spacing: 0.6em;
-        --baseline-multiplier: 0.22;
-        --x-height-multiplier: 0.342;
-    }
     .ImageCaption {
         &:empty:before {
             content: attr(placeholder);

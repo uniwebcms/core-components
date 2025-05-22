@@ -1,5 +1,16 @@
 import React from 'react';
-import styles from '../Section.module.scss';
+
+const Circle = () => (
+    <span
+        style={{
+            display: 'inline-block',
+            width: 5,
+            height: 5,
+            borderRadius: '50%',
+            backgroundColor: 'rgba(0, 0, 0, 0.68)',
+            verticalAlign: 'middle'
+        }}></span>
+);
 
 export default function ({ dividerType }) {
     let body = null;
@@ -15,12 +26,11 @@ export default function ({ dividerType }) {
     } else {
         body = (
             <div
-                className={`block text-center overflow-visible mt-4 mb-4 py-2 w-[896px] mx-auto`}
+                className={`my-4 py-2 w-[896px] mx-auto max-w-full flex justify-center text-[16px] sm:text-[20px] md:text-[24px] lg:text-[28px] gap-[1.2em]`}
                 contentEditable={false}>
-                <span
-                    className={`text-[30px] inline-block relative italic font-normal ${styles.DotDivider}`}>
-                    ...
-                </span>
+                <Circle />
+                <Circle />
+                <Circle />
             </div>
         );
     }
