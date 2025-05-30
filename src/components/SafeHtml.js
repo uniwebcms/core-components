@@ -3,11 +3,46 @@ const website = uniweb.activeWebsite;
 
 const { SafeHtml } = website.getRoutingComponents();
 
-export default (props) => (
-    <Suspense fallback={null}>
-        <SafeHtml {...props} />
-    </Suspense>
-);
+function resolveTopicLink(href) {
+    const { base_route: baseRoute, base_path: basePath } = website.getDomainInfo();
+    const targetHref = website.makeHref(href);
+    const language = website.getLanguage();
+    const siteId = website.getSiteId();
+
+    return baseRoute
+        ? `${basePath ? `${basePath}/` : ''}${targetHref}`
+        : `/websites/${language}/${siteId}/${targetHref}`;
+}
+
+function preprocessTopicLinks(htmlString) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+
+    const anchors = doc.querySelectorAll('a[href^="topic:"]');
+    anchors.forEach((anchor) => {
+        const topicHref = anchor.getAttribute('href');
+        const resolvedHref = resolveTopicLink(topicHref);
+        anchor.setAttribute('href', resolvedHref);
+    });
+
+    return doc.body.innerHTML;
+}
+
+export default ({ value, ...props }) => {
+    let parsedValue;
+
+    if (Array.isArray(value)) {
+        parsedValue = value.map((v) => preprocessTopicLinks(v));
+    } else {
+        parsedValue = preprocessTopicLinks(value);
+    }
+
+    return (
+        <Suspense fallback={null}>
+            <SafeHtml value={parsedValue} {...props} />
+        </Suspense>
+    );
+};
 
 // /**
 //  * Render a generic container with a given HTML string inserted into it.
