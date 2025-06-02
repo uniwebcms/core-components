@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.collapsible + .collapsible {
+    margin-top: 0px;
+    border-top: 0px solid transparent;
+}
+
+.collapsible:not(:last-child):has(+ .collapsible) {
+    margin-bottom: 0;
+}

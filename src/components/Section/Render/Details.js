@@ -11,22 +11,19 @@ export default function Details(props) {
     const description = content.find((c) => c.type === 'detailsContent')?.content || [];
 
     return (
-        <div className="mb-6 bg-text-color/10 border border-text-color/50 rounded-lg p-4">
+        <div className='my-6 border-y border-text-color/20 py-4 px-2 collapsible'>
             <button
                 onClick={() => setOpen(!open)}
-                className="w-full flex items-center justify-between gap-2"
-            >
-                <span className="text-lg font-medium truncate" title={title}>
-                    {title}
-                </span>
+                className='w-full flex items-center justify-between gap-2 group focus:outline-none'>
+                <span title={title}>{title}</span>
                 {open ? (
-                    <HiMinus className="w-6 h-6 text-text-color-70 hover:text-text-color-100" />
+                    <HiMinus className='w-6 h-6 text-text-color-50 group-hover:text-text-color-70' />
                 ) : (
-                    <HiPlus className="w-6 h-6 text-text-color-70 hover:text-text-color-100" />
+                    <HiPlus className='w-6 h-6 text-text-color-50 group-hover:text-text-color-70' />
                 )}
             </button>
             {open && (
-                <div>
+                <div className='[&>p]:text-text-color-70 [&>p]:mb-0'>
                     <Render content={description} />
                 </div>
             )}
