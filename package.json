@@ -1,6 +1,6 @@
 {
     "name": "@uniwebcms/core-components",
-    "version": "1.6.12",
+    "version": "1.6.13",
     "description": "",
     "main": "dist/bundle.js",
     "files": [

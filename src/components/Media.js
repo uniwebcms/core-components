@@ -16,14 +16,24 @@ export default function Media(props) {
         const { src, caption } = media;
         // local video
         if (src.startsWith('https://assets.uniweb.app/')) {
+            const videoElement = (
+                <video
+                    title={caption}
+                    src={src}
+                    className={twMerge('absolute inset-0 w-full h-full', className)}
+                    controls
+                    autoPlay={thumbnail ? true : undefined}></video>
+            );
+
             return (
                 <div className={twMerge('relative')} style={style ?? { paddingBottom: '56.25%' }}>
-                    <video
-                        title={caption}
-                        src={src}
-                        className={twMerge('absolute inset-0 w-full h-full', className)}
-                        controls
-                    ></video>
+                    {thumbnail ? (
+                        <FacadeVideo profile={profile} thumbnail={thumbnail} className={className}>
+                            {videoElement}
+                        </FacadeVideo>
+                    ) : (
+                        videoElement
+                    )}
                 </div>
             );
         } else {
@@ -48,8 +58,7 @@ export default function Media(props) {
                     src={`${src}${urlParams}`}
                     title={caption}
                     allow={allow}
-                    allowFullScreen
-                ></iframe>
+                    allowFullScreen></iframe>
             );
 
             if (isYouTube || isVimeo) {
@@ -58,14 +67,12 @@ export default function Media(props) {
                 ) : (
                     <div
                         className={twMerge('relative')}
-                        style={style ?? { paddingBottom: '56.25%' }}
-                    >
+                        style={style ?? { paddingBottom: '56.25%' }}>
                         {thumbnail ? (
                             <FacadeVideo
                                 profile={profile}
                                 thumbnail={thumbnail}
-                                className={className}
-                            >
+                                className={className}>
                                 {frame}
                             </FacadeVideo>
                         ) : (
@@ -89,17 +96,16 @@ const FacadeVideo = ({ profile, thumbnail, children, className }) => {
     if (!showVideo) {
         return (
             <>
-                <div className="absolute inset-0 w-full h-full">
+                <div className='absolute inset-0 w-full h-full'>
                     <Image {...{ profile, value, alt, url, className }} />
                 </div>
                 <div
-                    className="absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer group"
+                    className='absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer group'
                     onClick={() => {
                         setShowVideo(true);
-                    }}
-                >
-                    <div className="w-12 h-12 py-2 pl-2.5 pr-1.5 ring-1 !ring-gray-300 rounded-full !bg-white">
-                        <BiPlay className="w-full h-full !text-indigo-400 group-hover:!text-indigo-700" />
+                    }}>
+                    <div className='w-12 h-12 py-2 pl-2.5 pr-1.5 ring-1 ring-gray-200 rounded-full bg-white/75 group-hover:bg-white'>
+                        <BiPlay className='w-full h-full !text-indigo-500 group-hover:!text-indigo-700' />
                     </div>
                 </div>
             </>
