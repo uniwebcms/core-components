@@ -36,15 +36,14 @@ const Asset = forwardRef((props, ref) => {
         return withDownload ? (
             <a
                 href={href}
-                target="_blank"
+                target='_blank'
                 download={basename}
                 onClick={(e) => {
                     e.preventDefault();
                     downloadFile();
-                }}
-            >
+                }}>
                 <HiCloudDownload
-                    className={`text-blue-400 w-6 h-6 absolute top-3 right-3 invisible group-hover:visible`}
+                    className={`z-10 text-blue-400 w-6 h-6 absolute top-3 right-3 invisible group-hover:visible`}
                 />
                 {children}
             </a>
@@ -63,7 +62,7 @@ const Asset = forwardRef((props, ref) => {
 
     let backupImg = (
         <div className={`w-full h-full bg-white flex items-center justify-center`}>
-            <FileLogo filename={basename} size="24"></FileLogo>
+            <FileLogo filename={basename} size='24'></FileLogo>
         </div>
     );
 
