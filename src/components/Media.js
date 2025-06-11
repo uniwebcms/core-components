@@ -105,7 +105,7 @@ const FacadeVideo = ({ profile, thumbnail, children, className }) => {
                         setShowVideo(true);
                     }}>
                     <div className='w-12 h-12 py-2 pl-2.5 pr-1.5 ring-1 ring-gray-200 rounded-full bg-white/75 group-hover:bg-white'>
-                        <BiPlay className='w-full h-full !text-indigo-500 group-hover:!text-indigo-700' />
+                        <BiPlay className='w-full h-full text-indigo-500' />
                     </div>
                 </div>
             </>
