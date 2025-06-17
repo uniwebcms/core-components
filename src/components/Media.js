@@ -246,9 +246,9 @@ export default function Media(props) {
     if (!media) return null;
 
     if (media.hasOwnProperty('imgPos')) {
-        const { value, alt, url } = media;
+        const { value, alt, url, href } = media;
 
-        return <Image className={className} {...{ profile, value, alt, url }} />;
+        return <Image className={className} {...{ profile, value, alt, url, href }} />;
     } else {
         const { src, caption } = media;
         // local video

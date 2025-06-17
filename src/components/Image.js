@@ -7,6 +7,8 @@ import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import Link from './Link';
 
+const website = uniweb.activeWebsite;
+
 /**
  * Create a image with given profile and type.
  *
@@ -48,8 +50,7 @@ export default function (props) {
         ariaHidden = false,
         loading = 'lazy',
         filter = null,
-        href = null,
-        website
+        href = null
     } = props;
 
     let style = props.style || null;
