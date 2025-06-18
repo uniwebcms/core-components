@@ -262,7 +262,7 @@ const ExternalVideo = ({
     }
 };
 
-const LocalVideo = ({ profile, media, className, style, thumbnail, block }) => {
+const LocalVideo = ({ profile, media, className, style, thumbnail, block, autoPlay }) => {
     const { src, caption } = media;
     const videoRef = useRef(null);
     const trackingRef = useRef({ hasPlayed: false, milestones: {} });
@@ -354,9 +354,9 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block }) => {
             src={src}
             className={twMerge('absolute inset-0 w-full h-full', className)}
             controls
-            autoPlay={thumbnail ? true : undefined}
+            autoPlay={autoPlay}
             playsInline // Good practice for mobile
-            muted={thumbnail ? true : false} // Autoplay usually requires mute
+            muted={autoPlay ? true : false} // Autoplay usually requires mute
         ></video>
     );
 
@@ -374,7 +374,16 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block }) => {
 };
 
 export default function Media(props) {
-    const { profile, media, className = '', style, asBg = false, thumbnail, block } = props;
+    const {
+        profile,
+        media,
+        className = '',
+        style,
+        asBg = false,
+        thumbnail,
+        block,
+        autoplay = true
+    } = props;
 
     if (!media) return null;
 
@@ -387,27 +396,6 @@ export default function Media(props) {
         // local video
         if (src.startsWith('https://assets.uniweb.app/')) {
             return <LocalVideo {...props} />;
-            // const videoElement = (
-            //     <video
-            //         title={caption}
-            //         src={src}
-            //         className={twMerge('absolute inset-0 w-full h-full', className)}
-            //         controls
-            //         autoPlay={thumbnail ? true : undefined}
-            //     ></video>
-            // );
-
-            // return (
-            //     <div className={twMerge('relative')} style={style ?? { paddingBottom: '56.25%' }}>
-            //         {thumbnail ? (
-            //             <FacadeVideo profile={profile} thumbnail={thumbnail} className={className}>
-            //                 {videoElement}
-            //             </FacadeVideo>
-            //         ) : (
-            //             videoElement
-            //         )}
-            //     </div>
-            // );
         } else {
             return (
                 <ExternalVideo
@@ -418,6 +406,7 @@ export default function Media(props) {
                     asBg={asBg}
                     thumbnail={thumbnail}
                     block={block}
+                    autoplay={autoplay}
                 />
             );
         }
