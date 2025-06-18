@@ -150,7 +150,6 @@ const ExternalVideo = ({
         // --- YOUTUBE LOGIC ---
         if (isYouTube) {
             loadYouTubeAPI().then(() => {
-                console.log('YouTube API loaded');
                 if (!iframeRef.current) return; // Component might have unmounted while API was loading
 
                 playerRef.current = new window.YT.Player(iframe, {
@@ -165,7 +164,7 @@ const ExternalVideo = ({
                                     trackingRef.current.hasPlayed = true;
 
                                     // block.trackEvent('video_play', getImpressionData());
-                                    console.log('video_play', videoSrc);
+
                                     block.trackEvent(`video_play`, { video_src: videoSrc });
                                 }
                                 // 2. Start checking for milestones
@@ -196,13 +195,12 @@ const ExternalVideo = ({
             loadVimeoAPI()
                 .then(() => {
                     if (!iframeRef.current) return;
-                    console.log('Vimeo API loaded');
+
                     const player = new window.Vimeo.Player(iframe);
                     playerRef.current = player;
 
                     player.on('play', () => {
                         if (!trackingRef.current.hasPlayed) {
-                            console.log('video_play', videoSrc);
                             trackingRef.current.hasPlayed = true;
                             block.trackEvent(`video_play`, { video_src: videoSrc });
                         }
@@ -262,7 +260,7 @@ const ExternalVideo = ({
     }
 };
 
-const LocalVideo = ({ profile, media, className, style, thumbnail, block, autoPlay }) => {
+const LocalVideo = ({ profile, media, className, style, thumbnail, block, autoplay }) => {
     const { src, caption } = media;
     const videoRef = useRef(null);
     const trackingRef = useRef({ hasPlayed: false, milestones: {} });
@@ -276,7 +274,7 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block, autoPl
 
         const handleProgress = (progressPercentage) => {
             // Check for the 25% milestone first
-            console.log('Progress:', progressPercentage);
+
             if (progressPercentage >= 25 && !trackingRef.current.milestones[25]) {
                 trackingRef.current.milestones[25] = true;
                 block.trackEvent(`video_milestone_25`, {
@@ -313,7 +311,7 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block, autoPl
         const handlePlay = () => {
             if (!trackingRef.current.hasPlayed) {
                 trackingRef.current.hasPlayed = true;
-                console.log('video_play', src);
+
                 block.trackEvent('video_play', { video_src: src });
             }
         };
@@ -354,9 +352,9 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block, autoPl
             src={src}
             className={twMerge('absolute inset-0 w-full h-full', className)}
             controls
-            autoPlay={autoPlay}
+            autoPlay={autoplay ? true : false} // Autoplay can be controlled by the parent
             playsInline // Good practice for mobile
-            muted={autoPlay ? true : false} // Autoplay usually requires mute
+            muted={autoplay ? true : false} // Autoplay usually requires mute
         ></video>
     );
 
