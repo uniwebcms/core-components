@@ -102,7 +102,8 @@ const ExternalVideo = ({
     useEffect(() => {
         const iframe = iframeRef.current;
 
-        if (!iframe || !block || !block.trackEvent) return;
+        if (!iframe || !block || !block.trackEvent || !window.uniweb?.analytics?.initialized)
+            return;
 
         // Reset tracking state if the video source changes.
         trackingRef.current = { hasPlayed: false, milestones: {} };
@@ -268,7 +269,7 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block }) => {
 
     useEffect(() => {
         const video = videoRef.current;
-        if (!video || !block || !block.trackEvent) return;
+        if (!video || !block || !block.trackEvent || !window.uniweb?.analytics?.initialized) return;
 
         // Reset tracking state if the video source changes
         trackingRef.current = { hasPlayed: false, milestones: {} };
