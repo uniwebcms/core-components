@@ -62,7 +62,7 @@ const ExternalVideo = ({
 
     const isYouTube = src.includes('youtube') || src.includes('youtu.be');
     const isVimeo = src.includes('vimeo');
-    console.log(src);
+
     const urlParams = new URLSearchParams(src.split('?')[1] || '');
 
     if (isYouTube) {
@@ -107,20 +107,41 @@ const ExternalVideo = ({
         // Reset tracking state if the video source changes.
         trackingRef.current = { hasPlayed: false, milestones: {} };
 
+        //prevents the "waterfall" of events on a single seek and ensures milestones are reported in a logical sequence,
+        //giving a much more accurate picture of user engagement.
         const handleProgress = (progressPercentage) => {
-            [25, 50, 75, 95].forEach((milestone) => {
-                if (progressPercentage >= milestone && !trackingRef.current.milestones[milestone]) {
-                    trackingRef.current.milestones[milestone] = true;
-                    const eventName =
-                        milestone === 95 ? 'video_ended' : `video_milestone_${milestone}`;
-
-                    console.log(eventName, videoSrc, `${milestone}%`);
-                    block.trackEvent(eventName, {
-                        milestone: `${milestone}%`,
-                        video_src: videoSrc
-                    });
-                }
-            });
+            // Check for the 25% milestone first
+            if (progressPercentage >= 25 && !trackingRef.current.milestones[25]) {
+                trackingRef.current.milestones[25] = true;
+                block.trackEvent(`video_milestone_25`, {
+                    milestone: `25%`,
+                    video_src: videoSrc
+                });
+            }
+            // Only check for 50% if 25% is already done
+            else if (progressPercentage >= 50 && !trackingRef.current.milestones[50]) {
+                trackingRef.current.milestones[50] = true;
+                block.trackEvent(`video_milestone_50`, {
+                    milestone: `50%`,
+                    video_src: videoSrc
+                });
+            }
+            // Only check for 75% if 50% is already done
+            else if (progressPercentage >= 75 && !trackingRef.current.milestones[75]) {
+                trackingRef.current.milestones[75] = true;
+                block.trackEvent(`video_milestone_75`, {
+                    milestone: `75%`,
+                    video_src: videoSrc
+                });
+            }
+            // Only check for 95% (ended) if 75% is already done
+            else if (progressPercentage >= 95 && !trackingRef.current.milestones[95]) {
+                trackingRef.current.milestones[95] = true;
+                block.trackEvent(`video_ended`, {
+                    milestone: `95%`,
+                    video_src: videoSrc
+                });
+            }
         };
 
         let progressTimer;
@@ -240,6 +261,117 @@ const ExternalVideo = ({
     }
 };
 
+const LocalVideo = ({ profile, media, className, style, thumbnail, block }) => {
+    const { src, caption } = media;
+    const videoRef = useRef(null);
+    const trackingRef = useRef({ hasPlayed: false, milestones: {} });
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video || !block || !block.trackEvent) return;
+
+        // Reset tracking state if the video source changes
+        trackingRef.current = { hasPlayed: false, milestones: {} };
+
+        const handleProgress = (progressPercentage) => {
+            // Check for the 25% milestone first
+            console.log('Progress:', progressPercentage);
+            if (progressPercentage >= 25 && !trackingRef.current.milestones[25]) {
+                trackingRef.current.milestones[25] = true;
+                block.trackEvent(`video_milestone_25`, {
+                    milestone: `25%`,
+                    video_src: src
+                });
+            }
+            // Only check for 50% if 25% is already done
+            else if (progressPercentage >= 50 && !trackingRef.current.milestones[50]) {
+                trackingRef.current.milestones[50] = true;
+                block.trackEvent(`video_milestone_50`, {
+                    milestone: `50%`,
+                    video_src: src
+                });
+            }
+            // Only check for 75% if 50% is already done
+            else if (progressPercentage >= 75 && !trackingRef.current.milestones[75]) {
+                trackingRef.current.milestones[75] = true;
+                block.trackEvent(`video_milestone_75`, {
+                    milestone: `75%`,
+                    video_src: src
+                });
+            }
+            // Only check for 95% (ended) if 75% is already done
+            else if (progressPercentage >= 95 && !trackingRef.current.milestones[95]) {
+                trackingRef.current.milestones[95] = true;
+                block.trackEvent(`video_ended`, {
+                    milestone: `95%`,
+                    video_src: src
+                });
+            }
+        };
+
+        const handlePlay = () => {
+            if (!trackingRef.current.hasPlayed) {
+                trackingRef.current.hasPlayed = true;
+                console.log('video_play', src);
+                block.trackEvent('video_play', { video_src: src });
+            }
+        };
+
+        const handleTimeUpdate = () => {
+            if (video.duration) {
+                // Ensure duration is available
+                const progress = (video.currentTime / video.duration) * 100;
+                handleProgress(progress);
+            }
+        };
+
+        const handleEnded = () => {
+            // Fallback for the 95% milestone if it wasn't caught
+            if (!trackingRef.current.milestones[95]) {
+                trackingRef.current.milestones[95] = true;
+                block.trackEvent('video_ended', { video_src: src });
+            }
+        };
+
+        // Add event listeners
+        video.addEventListener('play', handlePlay);
+        video.addEventListener('timeupdate', handleTimeUpdate);
+        video.addEventListener('ended', handleEnded);
+
+        // Cleanup: remove event listeners when component unmounts or src changes
+        return () => {
+            video.removeEventListener('play', handlePlay);
+            video.removeEventListener('timeupdate', handleTimeUpdate);
+            video.removeEventListener('ended', handleEnded);
+        };
+    }, [src, block]);
+
+    const videoElement = (
+        <video
+            ref={videoRef}
+            title={caption}
+            src={src}
+            className={twMerge('absolute inset-0 w-full h-full', className)}
+            controls
+            autoPlay={thumbnail ? true : undefined}
+            playsInline // Good practice for mobile
+            muted={thumbnail ? true : false} // Autoplay usually requires mute
+        ></video>
+    );
+
+    return (
+        <div className={twMerge('relative')} style={style ?? { paddingBottom: '56.25%' }}>
+            {thumbnail ? (
+                <FacadeVideo profile={profile} thumbnail={thumbnail} className={className}>
+                    {videoElement}
+                </FacadeVideo>
+            ) : (
+                videoElement
+            )}
+        </div>
+    );
+};
+
 export default function Media(props) {
     const { profile, media, className = '', style, asBg = false, thumbnail, block } = props;
 
@@ -250,30 +382,31 @@ export default function Media(props) {
 
         return <Image className={className} {...{ profile, value, alt, url, href }} />;
     } else {
-        const { src, caption } = media;
+        const { src } = media;
         // local video
         if (src.startsWith('https://assets.uniweb.app/')) {
-            const videoElement = (
-                <video
-                    title={caption}
-                    src={src}
-                    className={twMerge('absolute inset-0 w-full h-full', className)}
-                    controls
-                    autoPlay={thumbnail ? true : undefined}
-                ></video>
-            );
+            return <LocalVideo {...props} />;
+            // const videoElement = (
+            //     <video
+            //         title={caption}
+            //         src={src}
+            //         className={twMerge('absolute inset-0 w-full h-full', className)}
+            //         controls
+            //         autoPlay={thumbnail ? true : undefined}
+            //     ></video>
+            // );
 
-            return (
-                <div className={twMerge('relative')} style={style ?? { paddingBottom: '56.25%' }}>
-                    {thumbnail ? (
-                        <FacadeVideo profile={profile} thumbnail={thumbnail} className={className}>
-                            {videoElement}
-                        </FacadeVideo>
-                    ) : (
-                        videoElement
-                    )}
-                </div>
-            );
+            // return (
+            //     <div className={twMerge('relative')} style={style ?? { paddingBottom: '56.25%' }}>
+            //         {thumbnail ? (
+            //             <FacadeVideo profile={profile} thumbnail={thumbnail} className={className}>
+            //                 {videoElement}
+            //             </FacadeVideo>
+            //         ) : (
+            //             videoElement
+            //         )}
+            //     </div>
+            // );
         } else {
             return (
                 <ExternalVideo
