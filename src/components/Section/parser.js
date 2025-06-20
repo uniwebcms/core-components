@@ -129,8 +129,7 @@ const buildTextNode = (content) => {
 
                 const iconHtml = ReactDOMServer.renderToStaticMarkup(
                     <span
-                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}
-                    >
+                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}>
                         <Icon {...item.attrs} />
                     </span>
                 );
@@ -381,8 +380,6 @@ export const buildArticleBlocks = (articleContent) => {
                         type: 'details',
                         content: content.map((item) => {
                             const { type, content } = item;
-
-                            console.log('details item', item);
 
                             return {
                                 type,
