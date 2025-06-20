@@ -14,11 +14,13 @@ import {
     SiFacebook,
     SiYoutube,
     SiGithub,
-    SiX,
     SiInstagram
 } from 'react-icons/si';
 import { FaResearchgate, FaTumblrSquare, FaQuora, FaGooglePlus } from 'react-icons/fa';
-import { HiOutlineLink } from 'react-icons/hi2';
+import { HiMiniPhone } from 'react-icons/hi2';
+import { IoIosLink } from 'react-icons/io';
+import { AiOutlineMail } from 'react-icons/ai';
+import { RiTwitterXFill } from 'react-icons/ri';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -51,19 +53,21 @@ export default function MediaIcon({ type, size = '8', className = '' }) {
         quora: FaQuora,
         researchgate: FaResearchgate,
         tumblr: FaTumblrSquare,
-        twitter: SiX,
+        twitter: RiTwitterXFill,
         youtube: SiYoutube,
         github: SiGithub,
-        x: SiX,
+        x: RiTwitterXFill,
         instagram: SiInstagram
     };
 
-    let Icon = null;
+    let Icon = IoIosLink;
 
-    if (map[type]) {
+    if (type === 'email') {
+        Icon = AiOutlineMail;
+    } else if (type === 'phone') {
+        Icon = HiMiniPhone;
+    } else if (map[type]) {
         Icon = map[type];
-    } else {
-        Icon = HiOutlineLink;
     }
 
     return <Icon className={twMerge(`w-${size} h-${size}`, className)} />;
