@@ -149,7 +149,7 @@ function generateGenericTitle(href) {
  * @returns {function} A Link component.
  */
 export default function ({ to, href, title, ...props }) {
-    const linkHref = href || to;
+    let linkHref = href || to;
 
     // Check if the extracted extension matches any known file extensions
     if (isFileLink(linkHref)) {
@@ -175,6 +175,10 @@ export default function ({ to, href, title, ...props }) {
                 {props.children}
             </a>
         );
+    }
+
+    if (linkHref.startsWith('topic:')) {
+        linkHref = website.makeHref(linkHref);
     }
 
     if (title) {
