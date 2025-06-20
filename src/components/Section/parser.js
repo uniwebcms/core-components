@@ -262,6 +262,13 @@ export const buildArticleBlocks = (articleContent) => {
 
     if (!docContent || !docContent.length) return [];
 
+    let lastElement = docContent[docContent.length - 1];
+    if (lastElement.type === 'paragraph' && !lastElement?.content) {
+        // If the last element is an empty paragraph, remove it. Which is the case that we add the trailing empty paragraph for
+        // enabling users to add new things at the end of the article.
+        docContent.pop();
+    }
+
     return docContent
         .map((block) => {
             const { type, content, attrs } = block;
