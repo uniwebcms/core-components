@@ -4,14 +4,25 @@ const website = uniweb.activeWebsite;
 const { SafeHtml } = website.getRoutingComponents();
 
 function resolveTopicLink(href) {
-    const { base_route: baseRoute, base_path: basePath } = website.getDomainInfo();
+    const { base_route: baseRoute, base_path: basePath, handle } = website.getDomainInfo();
     const targetHref = website.makeHref(href);
     const language = website.getLanguage();
     const siteId = website.getSiteId();
 
-    return baseRoute
-        ? `${basePath ? `${basePath}/` : ''}${targetHref}`
-        : `/websites/${language}/${siteId}/${targetHref}`;
+    //custom domain case
+    if (baseRoute) {
+        if (window.location.pathname.startsWith('/sites/')) {
+            return `/sites/${language}/${handle || siteId}/${targetHref}`;
+        } else {
+            return `${basePath ? `${basePath}/` : ''}${targetHref}`;
+        }
+    } else {
+        return `/websites/${language}/${siteId}/${targetHref}`;
+    }
+
+    // return baseRoute
+    //     ? `${basePath ? `${basePath}/` : ''}${targetHref}`
+    //     : `/websites/${language}/${siteId}/${targetHref}`;
 }
 
 function preprocessTopicLinks(htmlString) {
