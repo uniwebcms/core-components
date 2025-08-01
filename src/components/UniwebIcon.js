@@ -225,8 +225,8 @@ const UniwebIcon = ({
                 <img
                     src={url}
                     alt={parsedName}
-                    className={`w-full h-full block my-0`}
-                    style={{ backgroundColor: 'inherit' }}
+                    className={`block my-0`}
+                    style={{ backgroundColor: 'inherit', width: 'inherit', height: 'inherit' }}
                     draggable={false}
                 />
             </div>
