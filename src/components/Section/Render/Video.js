@@ -52,7 +52,21 @@ export default function Video({ page, videoControl, ...video }) {
     let caption = video?.caption || '';
     caption = stripTags(caption);
 
-    const [src, setSrc] = useState(video.src);
+    const { identifier } = video?.info || {};
+
+    let initSrc = '';
+
+    if (video.src) {
+        initSrc = video.src;
+    } else if (identifier) {
+        initSrc =
+            new uniweb.Profile(`docufolio/profile`, '_template').getAssetInfo(identifier)?.src ||
+            '';
+    }
+
+    video.src = initSrc;
+
+    const [src, setSrc] = useState(initSrc);
     const [currentVideo, setCurrentVideo] = useState(video);
     const [miniPlayer, setMiniPlayer] = useState(false);
     const [overlay, setOverlay] = useState(false);
@@ -140,21 +154,22 @@ export default function Video({ page, videoControl, ...video }) {
 
     const Buttons = () =>
         videoControl ? (
-            <div className='flex space-x-4 mt-4'>
+            <div className="flex space-x-4 mt-4">
                 <button
                     onClick={toggleMiniPlayer}
-                    className='flex items-center px-4 py-2 rounded-lg'>
-                    <FaCompress className='mr-2' />
-                    <span className='text-sm md:text-base'>
+                    className="flex items-center px-4 py-2 rounded-lg"
+                >
+                    <FaCompress className="mr-2" />
+                    <span className="text-sm md:text-base">
                         {website.localize({
                             en: 'Mini Player',
                             es: 'Reproductor Mini'
                         })}
                     </span>
                 </button>
-                <button onClick={toggleOverlay} className='flex items-center px-4 py-2 rounded-lg'>
-                    <FaExpand className='mr-2' />
-                    <span className='text-sm md:text-base'>
+                <button onClick={toggleOverlay} className="flex items-center px-4 py-2 rounded-lg">
+                    <FaExpand className="mr-2" />
+                    <span className="text-sm md:text-base">
                         {website.localize({
                             en: 'Overlay',
                             es: 'Superposición'
@@ -166,34 +181,35 @@ export default function Video({ page, videoControl, ...video }) {
 
     const FakeBlock = () => (
         <Image
-            className='relative z-0 flex-1 block m-0 aspect-video'
+            className="relative z-0 flex-1 block m-0 aspect-video"
             {...{ profile, url: ogThumbnail }}
         />
     );
 
     return (
-        <div className='not-prose mb-6 lg:my-8'>
-            <div className='relative'>
+        <div className="not-prose mb-6 lg:my-8">
+            <div className="relative">
                 <div
                     className={outerClasses}
                     onClick={(event) => {
                         if (event.target === event.currentTarget) {
                             toggleOverlay();
                         }
-                    }}>
+                    }}
+                >
                     <div className={playerClasses}>
                         {/* Main Video Area */}
                         <div className={`flex-1 block`}>
                             <Media
-                                className='mt-0'
+                                className="mt-0"
                                 media={currentVideo}
                                 {...(thumbnail && { thumbnail: { url: thumbnail } })}
                             />
                         </div>
                         {/* Thumbnail List */}
                         {overlay && (
-                            <div className='w-1/4 py-2 lg:py-4 xl:py-5 bg-gray-800 flex items-center justify-center h-[calc(100vw*3/4*0.5625)] min-[1152px]:h-[calc(1152px*3/4*0.5625)]'>
-                                <div className='grid grid-cols-1 px-2 lg:px-4 xl:px-5 gap-2 lg:gap-4 max-h-full overflow-y-auto'>
+                            <div className="w-1/4 py-2 lg:py-4 xl:py-5 bg-gray-800 flex items-center justify-center h-[calc(100vw*3/4*0.5625)] min-[1152px]:h-[calc(1152px*3/4*0.5625)]">
+                                <div className="grid grid-cols-1 px-2 lg:px-4 xl:px-5 gap-2 lg:gap-4 max-h-full overflow-y-auto">
                                     {videos.map((video, index) => {
                                         const currentThumbnail = thumbnails[index];
 
@@ -203,15 +219,16 @@ export default function Video({ page, videoControl, ...video }) {
                                                 className={`w-full aspect-video cursor-pointer p-1.5 rounded-lg transition-transform transform hover:scale-105 ${
                                                     video === currentVideo ? 'border-2' : ''
                                                 }`}
-                                                onClick={changeVideo(video)}>
+                                                onClick={changeVideo(video)}
+                                            >
                                                 {currentThumbnail ? (
                                                     <Image
-                                                        className='w-full h-full object-cover rounded-md'
+                                                        className="w-full h-full object-cover rounded-md"
                                                         {...{ profile, url: currentThumbnail }}
                                                     />
                                                 ) : (
-                                                    <div className='w-full h-full flex items-center justify-center bg-slate-600 rounded-md'>
-                                                        <LuVideo className='text-slate-300 w-8 h-8' />
+                                                    <div className="w-full h-full flex items-center justify-center bg-slate-600 rounded-md">
+                                                        <LuVideo className="text-slate-300 w-8 h-8" />
                                                     </div>
                                                 )}
                                             </div>
@@ -228,7 +245,7 @@ export default function Video({ page, videoControl, ...video }) {
                         )} */}
                     </div>
                     {caption ? (
-                        <div className='block outline-none text-primary-80 border-none text-sm text-center mt-1'>
+                        <div className="block outline-none text-primary-80 border-none text-sm text-center mt-1">
                             {caption}
                         </div>
                     ) : null}
