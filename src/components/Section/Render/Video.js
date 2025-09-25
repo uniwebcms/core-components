@@ -66,7 +66,6 @@ export default function Video({ page, videoControl, ...video }) {
 
     video.src = initSrc;
 
-    const [src, setSrc] = useState(initSrc);
     const [currentVideo, setCurrentVideo] = useState(video);
     const [miniPlayer, setMiniPlayer] = useState(false);
     const [overlay, setOverlay] = useState(false);
@@ -115,7 +114,11 @@ export default function Video({ page, videoControl, ...video }) {
 
     useEffect(() => {
         async function fetchThumbnail() {
-            const thumb = await getVideoThumbnail(video.src);
+            let thumb = null;
+
+            if (video.coverImg) thumb = video.coverImg;
+            else thumb = await getVideoThumbnail(video.src);
+
             setOgThumbnail(thumb);
         }
         fetchThumbnail();
@@ -123,18 +126,26 @@ export default function Video({ page, videoControl, ...video }) {
 
     useEffect(() => {
         async function fetchThumbnail() {
-            const thumb = await getVideoThumbnail(currentVideo.src);
+            // const thumb = await getVideoThumbnail(currentVideo.src);
+            let thumb = null;
+
+            if (currentVideo.coverImg) thumb = currentVideo.coverImg;
+            else thumb = await getVideoThumbnail(currentVideo.src);
             setThumbnail(thumb);
         }
-        setSrc(currentVideo.src);
+
         fetchThumbnail();
     }, [currentVideo]);
 
     useEffect(() => {
         async function fetchThumbnails() {
             const array = await Promise.all(
-                videos.map(async ({ src }) => {
-                    const thumb = await getVideoThumbnail(src);
+                videos.map(async ({ src, coverImg }) => {
+                    let thumb = null;
+
+                    if (coverImg) thumb = coverImg;
+                    else thumb = await getVideoThumbnail(src);
+
                     return thumb;
                 })
             );
