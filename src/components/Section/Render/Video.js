@@ -44,6 +44,23 @@ async function getVideoThumbnail(url) {
     return null;
 }
 
+function getCoverImgUrl(video) {
+    if (!video.coverImg) return null;
+
+    let coverUrl = '';
+    let coverImg = video.coverImg;
+
+    if (coverImg?.src) {
+        coverUrl = coverImg.src;
+    } else if (coverImg?.identifier) {
+        coverUrl = new uniweb.Profile(`docufolio/profile`, '_template').getAssetInfo(
+            coverImg.identifier
+        );
+    }
+
+    return coverUrl;
+}
+
 export default function Video({ page, videoControl, ...video }) {
     const profile = page.getPageProfile();
     const sections = page.blockGroups.body;
@@ -114,10 +131,9 @@ export default function Video({ page, videoControl, ...video }) {
 
     useEffect(() => {
         async function fetchThumbnail() {
-            let thumb = null;
+            let thumb = getCoverImgUrl(video);
 
-            if (video.coverImg) thumb = video.coverImg;
-            else thumb = await getVideoThumbnail(video.src);
+            if (!thumb) thumb = await getVideoThumbnail(video.src);
 
             setOgThumbnail(thumb);
         }
@@ -126,11 +142,10 @@ export default function Video({ page, videoControl, ...video }) {
 
     useEffect(() => {
         async function fetchThumbnail() {
-            // const thumb = await getVideoThumbnail(currentVideo.src);
-            let thumb = null;
+            let thumb = getCoverImgUrl(currentVideo);
 
-            if (currentVideo.coverImg) thumb = currentVideo.coverImg;
-            else thumb = await getVideoThumbnail(currentVideo.src);
+            if (!thumb) thumb = await getVideoThumbnail(currentVideo.src);
+
             setThumbnail(thumb);
         }
 
@@ -140,11 +155,10 @@ export default function Video({ page, videoControl, ...video }) {
     useEffect(() => {
         async function fetchThumbnails() {
             const array = await Promise.all(
-                videos.map(async ({ src, coverImg }) => {
-                    let thumb = null;
+                videos.map(async (video) => {
+                    let thumb = getCoverImgUrl(video);
 
-                    if (coverImg) thumb = coverImg;
-                    else thumb = await getVideoThumbnail(src);
+                    if (!thumb) thumb = await getVideoThumbnail(video.src);
 
                     return thumb;
                 })
