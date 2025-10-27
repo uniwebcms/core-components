@@ -11,6 +11,7 @@ import MediaIcon from './components/MediaIcon';
 import SafeHtml from './components/SafeHtml';
 import { buildArticleBlocks } from './components/Section/parser';
 import ArticleRender from './components/Section/Render';
+import Warning from './components/Section/Render/Warning';
 
 export {
     Section,
@@ -24,5 +25,6 @@ export {
     MediaIcon,
     SafeHtml,
     buildArticleBlocks,
-    ArticleRender
+    ArticleRender,
+    Warning
 };
