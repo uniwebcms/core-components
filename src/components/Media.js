@@ -53,7 +53,8 @@ const ExternalVideo = ({
     style,
     asBg = false,
     thumbnail,
-    block
+    block,
+    components
 }) => {
     const { src, caption } = media;
     const iframeRef = useRef(null);
@@ -236,8 +237,7 @@ const ExternalVideo = ({
             src={videoSrc}
             title={caption}
             allow={allow}
-            allowFullScreen
-        ></iframe>
+            allowFullScreen></iframe>
     );
 
     if (isYouTube || isVimeo) {
@@ -246,7 +246,11 @@ const ExternalVideo = ({
         ) : (
             <div className={twMerge('relative')} style={style ?? { paddingBottom: '56.25%' }}>
                 {thumbnail ? (
-                    <FacadeVideo profile={profile} thumbnail={thumbnail} className={className}>
+                    <FacadeVideo
+                        profile={profile}
+                        thumbnail={thumbnail}
+                        className={className}
+                        FacadePlayControl={components.FacadePlayControl}>
                         {frame}
                     </FacadeVideo>
                 ) : (
@@ -361,7 +365,11 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block, autopl
     return (
         <div className={twMerge('relative')} style={style ?? { paddingBottom: '56.25%' }}>
             {thumbnail ? (
-                <FacadeVideo profile={profile} thumbnail={thumbnail} className={className}>
+                <FacadeVideo
+                    profile={profile}
+                    thumbnail={thumbnail}
+                    className={className}
+                    FacadePlayControl={components.FacadePlayControl}>
                     {videoElement}
                 </FacadeVideo>
             ) : (
@@ -380,7 +388,8 @@ export default function Media(props) {
         asBg = false,
         thumbnail,
         block,
-        autoplay = true
+        autoplay = true,
+        components = {}
     } = props;
 
     if (!media) return null;
@@ -405,13 +414,14 @@ export default function Media(props) {
                     thumbnail={thumbnail}
                     block={block}
                     autoplay={autoplay}
+                    components={components}
                 />
             );
         }
     }
 }
 
-const FacadeVideo = ({ profile, thumbnail, children, className }) => {
+const FacadeVideo = ({ profile, thumbnail, children, className, FacadePlayControl = null }) => {
     const [showVideo, setShowVideo] = useState(false);
 
     const { value, alt, url } = thumbnail;
@@ -419,18 +429,19 @@ const FacadeVideo = ({ profile, thumbnail, children, className }) => {
     if (!showVideo) {
         return (
             <>
-                <div className="absolute inset-0 w-full h-full">
+                <div className='absolute inset-0 w-full h-full'>
                     <Image {...{ profile, value, alt, url, className }} />
                 </div>
                 <div
-                    className="absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer group"
+                    className='absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer group'
                     onClick={() => {
                         setShowVideo(true);
-                    }}
-                >
-                    <div className="w-12 h-12 py-2 pl-2.5 pr-1.5 ring-1 ring-gray-200 rounded-full bg-white/75 group-hover:bg-white">
-                        <BiPlay className="w-full h-full text-indigo-500" />
-                    </div>
+                    }}>
+                    {FacadePlayControl || (
+                        <div className='w-12 h-12 py-2 pl-2.5 pr-1.5 ring-1 ring-gray-200 rounded-full bg-white/75 group-hover:bg-white'>
+                            <BiPlay className='w-full h-full text-indigo-500' />
+                        </div>
+                    )}
                 </div>
             </>
         );
