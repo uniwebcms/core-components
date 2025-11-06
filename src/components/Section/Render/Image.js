@@ -17,22 +17,22 @@ export default function ImageBlock(props) {
 
     const [imgRatio] = useState(aspect_ratio);
 
-    const keys = ['blur', 'brightness', 'contrast', 'grayscale'];
-
-    let filterStyle = [];
-
-    keys.forEach((key) => {
-        let val = filter && filter[key] ? filter[key] : '';
-
-        if (val) {
-            filterStyle.push(`${key}(${val})`);
-        }
-    });
-
     let imgFilter = '';
 
-    if (filterStyle.length) {
-        imgFilter = `[&_img]:`;
+    if (filter && Object.keys(filter).length > 0) {
+        let filterStyle = {
+            filter: `
+                blur(${filter?.blur || 0}px)
+                brightness(${filter?.brightness || 100}%)
+                contrast(${filter?.contrast || 100}%)
+                grayscale(${filter?.grayscale || 0}%)
+                saturate(${filter?.saturate || 100}%)
+                sepia(${filter?.sepia || 0}%)
+            `
+        };
+        imgFilter = css({
+            '& img': filterStyle
+        });
     }
 
     const { identifier } = info;

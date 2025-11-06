@@ -74,19 +74,30 @@ export default function (props) {
 
     const ref = optSrc ? React.useRef(null) : null;
 
-    if (filter) {
-        let filterStyle = [];
+    if (filter && Object.keys(filter).length > 0) {
+        // let filterStyle = [];
 
-        Object.keys(filter).forEach((key) => {
-            let val = filter?.[key] ? filter[key] : '';
+        // Object.keys(filter).forEach((key) => {
+        //     let val = filter?.[key] ? filter[key] : '';
 
-            if (val) {
-                filterStyle.push(`${key}(${val})`);
-            }
-        });
+        //     if (val) {
+        //         filterStyle.push(`${key}(${val})`);
+        //     }
+        // });
 
-        const filterCSS = {
-            filter: filterStyle.join(' ') + ';'
+        // const filterCSS = {
+        //     filter: filterStyle.join(' ') + ';'
+        // };
+
+        let filterCSS = {
+            filter: `
+                blur(${filter?.blur || 0}px)
+                brightness(${filter?.brightness || 100}%)
+                contrast(${filter?.contrast || 100}%)
+                grayscale(${filter?.grayscale || 0}%)
+                saturate(${filter?.saturate || 100}%)
+                sepia(${filter?.sepia || 0}%)
+            `
         };
 
         style = style ? { ...style, ...filterCSS } : filterCSS;

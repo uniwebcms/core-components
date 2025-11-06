@@ -12,6 +12,7 @@ import SafeHtml from './components/SafeHtml';
 import { buildArticleBlocks } from './components/Section/parser';
 import ArticleRender from './components/Section/Render';
 import Warning from './components/Section/Render/Warning';
+import ImageBlock from './components/Section/Render/Image';
 
 export {
     Section,
@@ -26,5 +27,6 @@ export {
     SafeHtml,
     buildArticleBlocks,
     ArticleRender,
-    Warning
+    Warning,
+    ImageBlock
 };
