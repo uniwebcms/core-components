@@ -10,3 +10,38 @@
 .collapsible:not(:last-child):has(+ .collapsible) {
     margin-bottom: 0;
 }
+
+/* below css rules are used to override the default Tailwind CSS typography styles, and use the custom CSS variables defined in the main app. */
+.tw-core-component .prose :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--link-color, inherit);
+}
+
+.tw-core-component
+    .prose
+    :where(a:hover):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--link-hover-color, inherit);
+}
+
+.tw-core-component
+    .prose
+    :where(a:active):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--link-active-color, inherit);
+}
+
+.tw-core-component .prose :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--heading-color, inherit);
+}
+
+.tw-core-component .prose :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--heading-color, inherit);
+}
+
+.tw-core-component .prose :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--heading-color, inherit);
+}
+
+.tw-core-component .prose :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--text-color, inherit);
+}
+
+/* more override rules for buttons and other elements can be added here */

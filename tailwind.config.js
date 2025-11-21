@@ -14,27 +14,7 @@ module.exports = {
                     css: {
                         color: 'inherit',
                         a: {
-                            color: 'inherit',
                             textDecoration: 'underline'
-                        },
-                        strong: {
-                            color: 'inherit',
-                            fontWeight: theme('fontWeight.bold')
-                        },
-                        h1: {
-                            color: 'inherit'
-                        },
-                        h2: {
-                            color: 'inherit'
-                        },
-                        h3: {
-                            color: 'inherit'
-                        },
-                        p: {
-                            color: 'inherit'
-                        },
-                        'h4, h5, h6, blockquote': {
-                            color: 'inherit'
                         }
                     }
                 }
