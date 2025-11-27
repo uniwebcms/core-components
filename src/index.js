@@ -13,6 +13,7 @@ import { buildArticleBlocks } from './components/Section/parser';
 import ArticleRender from './components/Section/Render';
 import Warning from './components/Section/Render/Warning';
 import ImageBlock from './components/Section/Render/Image';
+import Document from './components/Section/Render/Document';
 
 export {
     Section,
@@ -28,5 +29,6 @@ export {
     buildArticleBlocks,
     ArticleRender,
     Warning,
-    ImageBlock
+    ImageBlock,
+    Document
 };

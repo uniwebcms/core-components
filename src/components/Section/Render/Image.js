@@ -9,7 +9,7 @@ export default function ImageBlock(props) {
 
     if (targetId) info.contentId = targetId;
 
-    let { width, height, ratio } = aspect_ratio;
+    let { ratio } = aspect_ratio;
 
     let maxWidth = 'none',
         maxHeight,
@@ -18,21 +18,28 @@ export default function ImageBlock(props) {
     const [imgRatio] = useState(aspect_ratio);
 
     let imgFilter = '';
+    let wrapperStyle = {};
 
     if (filter && Object.keys(filter).length > 0) {
-        let filterStyle = {
-            filter: `
-                blur(${filter?.blur || 0}px)
-                brightness(${filter?.brightness || 100}%)
-                contrast(${filter?.contrast || 100}%)
-                grayscale(${filter?.grayscale || 0}%)
-                saturate(${filter?.saturate || 100}%)
-                sepia(${filter?.sepia || 0}%)
-            `
-        };
-        imgFilter = css({
-            '& img': filterStyle
-        });
+        // let filterStyle = {
+        //     filter: `
+        //         blur(${filter?.blur || 0}px)
+        //         brightness(${filter?.brightness || 100}%)
+        //         contrast(${filter?.contrast || 100}%)
+        //         grayscale(${filter?.grayscale || 0}%)
+        //         saturate(${filter?.saturate || 100}%)
+        //         sepia(${filter?.sepia || 0}%)
+        //     `
+        // };
+        // imgFilter = css({
+        //     '& img': filterStyle
+        // });
+        wrapperStyle['--f-blur'] = `${filter?.blur || 0}px`;
+        wrapperStyle['--f-bright'] = `${filter?.brightness || 100}%`;
+        wrapperStyle['--f-contrast'] = `${filter?.contrast || 100}%`;
+        wrapperStyle['--f-gray'] = `${filter?.grayscale || 0}%`;
+        wrapperStyle['--f-sat'] = `${filter?.saturate || 100}%`;
+        wrapperStyle['--f-sepia'] = `${filter?.sepia || 0}%`;
     }
 
     const { identifier } = info;
@@ -50,10 +57,11 @@ export default function ImageBlock(props) {
     const inner = (
         <>
             <div
-                className={`relative w-full mx-auto block`}
+                className={`relative w-full mx-auto block ${styles.ImageWrapper}`}
                 style={{
                     maxHeight,
-                    maxWidth
+                    maxWidth,
+                    ...wrapperStyle
                 }}
             >
                 <div
@@ -77,11 +85,14 @@ export default function ImageBlock(props) {
 
     if (direction === 'small') {
         body = (
-            <figure className={`relative clear-both outline-none z-10 mt-10 mx-auto`}>
+            <figure
+                className={`relative clear-both outline-none z-10 mt-10 mx-auto ${styles.ImageWrapper}`}
+            >
                 <div
                     className={`relative w-full mx-auto flex justify-center ${imgFilter}`}
                     style={{
-                        maxWidth: '896px'
+                        maxWidth: '896px',
+                        ...wrapperStyle
                     }}
                 >
                     <Image

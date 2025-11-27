@@ -237,7 +237,8 @@ const ExternalVideo = ({
             src={videoSrc}
             title={caption}
             allow={allow}
-            allowFullScreen></iframe>
+            allowFullScreen
+        ></iframe>
     );
 
     if (isYouTube || isVimeo) {
@@ -250,7 +251,8 @@ const ExternalVideo = ({
                         profile={profile}
                         thumbnail={thumbnail}
                         className={className}
-                        FacadePlayControl={components.FacadePlayControl}>
+                        FacadePlayControl={components.FacadePlayControl}
+                    >
                         {frame}
                     </FacadeVideo>
                 ) : (
@@ -264,7 +266,16 @@ const ExternalVideo = ({
     }
 };
 
-const LocalVideo = ({ profile, media, className, style, thumbnail, block, autoplay }) => {
+const LocalVideo = ({
+    profile,
+    media,
+    className,
+    style,
+    thumbnail,
+    block,
+    autoplay,
+    components = {}
+}) => {
     const { src, caption } = media;
     const videoRef = useRef(null);
     const trackingRef = useRef({ hasPlayed: false, milestones: {} });
@@ -369,7 +380,8 @@ const LocalVideo = ({ profile, media, className, style, thumbnail, block, autopl
                     profile={profile}
                     thumbnail={thumbnail}
                     className={className}
-                    FacadePlayControl={components.FacadePlayControl}>
+                    FacadePlayControl={components.FacadePlayControl}
+                >
                     {videoElement}
                 </FacadeVideo>
             ) : (
@@ -429,17 +441,18 @@ const FacadeVideo = ({ profile, thumbnail, children, className, FacadePlayContro
     if (!showVideo) {
         return (
             <>
-                <div className='absolute inset-0 w-full h-full'>
+                <div className="absolute inset-0 w-full h-full">
                     <Image {...{ profile, value, alt, url, className }} />
                 </div>
                 <div
-                    className='absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer group'
+                    className="absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer group"
                     onClick={() => {
                         setShowVideo(true);
-                    }}>
+                    }}
+                >
                     {FacadePlayControl || (
-                        <div className='w-12 h-12 py-2 pl-2.5 pr-1.5 ring-1 ring-gray-200 rounded-full bg-white/75 group-hover:bg-white'>
-                            <BiPlay className='w-full h-full text-indigo-500' />
+                        <div className="w-12 h-12 py-2 pl-2.5 pr-1.5 ring-1 ring-gray-200 rounded-full bg-white/75 group-hover:bg-white">
+                            <BiPlay className="w-full h-full text-indigo-500" />
                         </div>
                     )}
                 </div>

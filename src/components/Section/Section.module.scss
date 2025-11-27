@@ -34,3 +34,11 @@
         }
     }
 }
+
+.ImageWrapper {
+    img {
+        filter: blur(var(--f-blur, 0px)) brightness(var(--f-bright, 100%))
+            contrast(var(--f-contrast, 100%)) grayscale(var(--f-gray, 0%))
+            saturate(var(--f-sat, 100%)) sepia(var(--f-sepia, 0%));
+    }
+}

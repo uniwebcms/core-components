@@ -129,7 +129,8 @@ const buildTextNode = (content) => {
 
                 const iconHtml = ReactDOMServer.renderToStaticMarkup(
                     <span
-                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}>
+                        className={`mb-1 inline-block relative cursor-default select-text align-middle`}
+                    >
                         <Icon {...item.attrs} />
                     </span>
                 );
@@ -327,6 +328,14 @@ export const buildArticleBlocks = (articleContent) => {
                         type: type === 'WarningBlock' ? 'warning' : 'codeBlock',
                         content: buildTextNode(content),
                         attrs
+                    };
+                case 'document-group':
+                    return {
+                        type,
+                        content:
+                            content?.map((item) => {
+                                return item;
+                            }) || []
                     };
                 case 'card-group':
                     return {
