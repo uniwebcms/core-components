@@ -55,14 +55,14 @@ export default function Document(props) {
     const previewMarkup = coverUrl ? (
         <img src={coverUrl} alt={alt || title || ''} className={`w-full h-full object-cover`} />
     ) : (
-        <div className={`mr-4 bg-bg-color p-2 rounded shadow-sm flex items-center justify-center`}>
+        <div className={`mr-4 bg-bg-color p-2 rounded !shadow-sm flex items-center justify-center`}>
             <FileLogo filename={filename} size="16"></FileLogo>
         </div>
     );
 
     return (
         <div
-            className={`not-prose w-64 bg-bg-color border rounded-lg !shadow-sm transition-shadow cursor-pointer group relative `}
+            className={`not-prose w-64 bg-bg-color border rounded-lg !shadow-sm hover:!shadow-lg transition-shadow cursor-pointer group relative `}
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
