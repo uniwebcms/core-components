@@ -28,12 +28,16 @@ export default function Document(props) {
     let filename = '';
 
     let downloadable = false;
-
+    let downloadableSrc = '';
     if (identifier) {
         filename = identifier.split('/')?.[1];
         downloadable =
             new uniweb.Profile(`docufolio/profile`, '_template').getAssetInfo(identifier)?.href ||
             '';
+        downloadableSrc = new uniweb.Profile(`docufolio/profile`, '_template').getAssetInfo(
+            identifier,
+            false
+        )?.src;
     } else if (src) {
         filename = src.split('/').pop();
     }
@@ -68,7 +72,11 @@ export default function Document(props) {
                 e.stopPropagation();
 
                 if (downloadable) {
-                    downloadFile(downloadable, filename);
+                    if (fileType.toLocaleLowerCase() === 'pdf') {
+                        window.open(downloadableSrc, '_blank');
+                    } else {
+                        downloadFile(downloadable, filename);
+                    }
                 } else if (src) {
                     window.open(src, '_blank');
                 }
