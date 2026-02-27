@@ -8,7 +8,18 @@ export default function Details(props) {
     const [open, setOpen] = useState(attrs.open || false);
 
     const title = content.find((c) => c.type === 'detailsSummary')?.content || '';
-    const description = content.find((c) => c.type === 'detailsContent')?.content || [];
+    const description = (content.find((c) => c.type === 'detailsContent')?.content || []).reduce(
+        (acc, item) => {
+            const prev = acc[acc.length - 1];
+            if (item.type === 'orderedList' && prev?.type === 'orderedList') {
+                prev.content = [...prev.content, ...item.content];
+            } else {
+                acc.push({ ...item });
+            }
+            return acc;
+        },
+        []
+    );
 
     return (
         <div className='my-6 border-y border-text-color/20 py-4 px-2 collapsible'>
