@@ -40,6 +40,8 @@ function preprocessTopicLinks(htmlString) {
 }
 
 export default ({ value, ...props }) => {
+    if (value === null || value === undefined) return null;
+
     let parsedValue;
 
     if (Array.isArray(value)) {
