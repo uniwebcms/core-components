@@ -394,7 +394,7 @@ export const buildArticleBlocks = (articleContent) => {
                                 type,
                                 content:
                                     type === 'detailsSummary'
-                                        ? content[0].text
+                                        ? buildTextNode(content)
                                         : buildArticleBlocks(item)
                             };
                         }),

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Render from './index';
 import { HiPlus, HiMinus } from 'react-icons/hi';
+import SafeHtml from '../../SafeHtml';
 
 export default function Details(props) {
     const { content, attrs } = props;
@@ -26,7 +27,7 @@ export default function Details(props) {
             <button
                 onClick={() => setOpen(!open)}
                 className='w-full flex items-center justify-between gap-2 group text-left focus:outline-none'>
-                <span title={title}>{title}</span>
+                <SafeHtml value={title} as='span' />
                 {open ? (
                     <HiMinus className='w-6 h-6 text-text-color-50 group-hover:text-text-color-70 flex-shrink-0' />
                 ) : (

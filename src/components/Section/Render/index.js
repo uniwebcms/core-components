@@ -25,8 +25,7 @@ const Render = function (props) {
                     <p
                         key={index}
                         dangerouslySetInnerHTML={{ __html: content }}
-                        style={{ textAlign: alignment }}
-                    ></p>
+                        style={{ textAlign: alignment }}></p>
                 );
             case 'heading':
                 const { level } = block;
@@ -38,8 +37,7 @@ const Render = function (props) {
                         key={index}
                         id={`Section${blockId}-${stripTags(content).replace(/\s/g, '-')}`}
                         style={{ textAlign: alignment }}
-                        dangerouslySetInnerHTML={{ __html: content }}
-                    ></Heading>
+                        dangerouslySetInnerHTML={{ __html: content }}></Heading>
                 );
             case 'image':
                 return <Image key={index} {...block} page={page} />;
@@ -52,7 +50,7 @@ const Render = function (props) {
                 return <Divider key={index} {...block} />;
             case 'orderedList':
                 return (
-                    <ol key={index} className="list-decimal pl-5">
+                    <ol key={index} className='list-decimal pl-5'>
                         {content.map((item, i) => {
                             return (
                                 <li key={i}>
@@ -64,7 +62,7 @@ const Render = function (props) {
                 );
             case 'bulletList':
                 return (
-                    <ul key={index} className="list-disc pl-5">
+                    <ul key={index} className='list-disc pl-5'>
                         {content.map((item, i) => {
                             return (
                                 <li key={i}>
@@ -96,7 +94,7 @@ const Render = function (props) {
                 return (
                     <div key={index} className={'flex flex-wrap gap-6'}>
                         {content.map((c, i) => (
-                            <Document key={`c_${i}`} {...c.attrs} type="document"></Document>
+                            <Document key={`c_${i}`} {...c.attrs} type='document'></Document>
                         ))}
                     </div>
                 );
@@ -106,15 +104,14 @@ const Render = function (props) {
                 const { style } = block.attrs;
 
                 return (
-                    <div key={index} className="mb-3 lg:mb-4">
+                    <div key={index} className='mb-3 lg:mb-4'>
                         <button
-                            type="button"
+                            type='button'
                             className={twJoin(
                                 style === 'secondary' ? 'btn-secondary' : '',
                                 'px-2.5 py-1 lg:px-4 lg:py-2 border text-base lg:text-lg'
                             )}
-                            dangerouslySetInnerHTML={{ __html: content }}
-                        ></button>
+                            dangerouslySetInnerHTML={{ __html: content }}></button>
                     </div>
                 );
             case 'table':
