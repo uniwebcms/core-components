@@ -10,6 +10,46 @@ import Link from './Link';
 const website = uniweb.activeWebsite;
 
 /**
+ * Resolve the image sources for a profile banner or avatar.
+ * The optimized (webp) url is preferred; the original upload is kept as fallback.
+ */
+function getProfileImageSources(profile, type, size) {
+    const { url, alt, fallback } = profile.getImageInfo(type, size);
+
+    // Older runtimes do not return `fallback`; the 'original' size always maps to the base file.
+    const baseUrl = fallback || profile.getImageInfo(type, 'original')?.url || '';
+
+    if (baseUrl && baseUrl !== url) {
+        return { src: baseUrl, optSrc: url, alt };
+    }
+
+    return { src: url, optSrc: null, alt };
+}
+
+function getAssetImageSources(profile, value, imgURL, altText) {
+    if (imgURL && !value) {
+        return { src: imgURL, optSrc: null, alt: altText };
+    }
+
+    const { src, alt, optSrc } = profile.getAssetInfo(value, true, altText);
+
+    return { src, optSrc: optSrc && optSrc !== src ? optSrc : null, alt };
+}
+
+function buildFilterStyle(filter) {
+    return {
+        filter: `
+            blur(${filter?.blur || 0}px)
+            brightness(${filter?.brightness || 100}%)
+            contrast(${filter?.contrast || 100}%)
+            grayscale(${filter?.grayscale || 0}%)
+            saturate(${filter?.saturate || 100}%)
+            sepia(${filter?.sepia || 0}%)
+        `
+    };
+}
+
+/**
  * Create a image with given profile and type.
  *
  * @example
@@ -53,57 +93,26 @@ export default function (props) {
         href = null
     } = props;
 
-    let style = props.style || null;
+    const value = imgSrc || imgVal;
 
-    let value = imgSrc || imgVal;
+    const { src, optSrc, alt } =
+        type === 'banner' || type === 'avatar'
+            ? getProfileImageSources(profile, type, size)
+            : getAssetImageSources(profile, value, imgURL, altText);
+
+    // When the optimized version fails to load, fall back to the original upload.
+    const [failedOptSrc, setFailedOptSrc] = React.useState(null);
+    const useFallback = Boolean(optSrc) && failedOptSrc === optSrc;
 
     const roundClassName = rounded ? (rounded === true ? 'rounded-full' : rounded) : '';
 
-    let src, alt, optSrc;
+    const filterStyle = filter && Object.keys(filter).length > 0 ? buildFilterStyle(filter) : null;
 
-    if (type === 'banner' || type === 'avatar') {
-        ({ url: src, alt } = profile.getImageInfo(type, size));
-    } else {
-        if (imgURL && !value) {
-            src = imgURL;
-            alt = altText;
-        } else {
-            ({ src, alt, optSrc } = profile.getAssetInfo(value, true, altText));
-        }
-    }
+    const style =
+        props.style || filterStyle ? { ...(props.style || {}), ...(filterStyle || {}) } : null;
 
-    const ref = optSrc ? React.useRef(null) : null;
-
-    if (filter && Object.keys(filter).length > 0) {
-        // let filterStyle = [];
-
-        // Object.keys(filter).forEach((key) => {
-        //     let val = filter?.[key] ? filter[key] : '';
-
-        //     if (val) {
-        //         filterStyle.push(`${key}(${val})`);
-        //     }
-        // });
-
-        // const filterCSS = {
-        //     filter: filterStyle.join(' ') + ';'
-        // };
-
-        let filterCSS = {
-            filter: `
-                blur(${filter?.blur || 0}px)
-                brightness(${filter?.brightness || 100}%)
-                contrast(${filter?.contrast || 100}%)
-                grayscale(${filter?.grayscale || 0}%)
-                saturate(${filter?.saturate || 100}%)
-                sepia(${filter?.sepia || 0}%)
-            `
-        };
-
-        style = style ? { ...style, ...filterCSS } : filterCSS;
-    }
-
-    let imgProps = {
+    const imgProps = {
+        src: optSrc && !useFallback ? optSrc : src,
         alt,
         loading,
         'aria-hidden': ariaHidden,
@@ -111,36 +120,12 @@ export default function (props) {
             customStyle ? '' : 'w-full h-full object-cover',
             roundClassName,
             className
-        )
+        ),
+        ...(optSrc && !useFallback ? { onError: () => setFailedOptSrc(optSrc) } : {}),
+        ...(style ? { style } : {})
     };
 
-    if (optSrc) {
-        imgProps.src = optSrc;
+    const body = <img {...imgProps} />;
 
-        imgProps.ref = ref;
-
-        imgProps.onError = () => {
-            if (
-                ref?.current &&
-                (!ref.current.getAttribute('fallback') || ref.current.getAttribute('src') !== src)
-            ) {
-                ref.current.setAttribute('src', src);
-                ref.current.setAttribute('fallback', true);
-            }
-        };
-    } else {
-        imgProps.src = src;
-    }
-
-    if (style) {
-        imgProps.style = style;
-    }
-
-    let body = <img {...imgProps} />;
-
-    if (href) {
-        return <Link to={website.makeHref(href)}>{body}</Link>;
-    } else {
-        return body;
-    }
+    return href ? <Link to={website.makeHref(href)}>{body}</Link> : body;
 }
