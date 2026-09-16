@@ -11,8 +11,33 @@ import Math from './Math';
 import Table from './Table';
 import Details from './Details';
 
+/**
+ * Font size for each predefined text size, in `em` so a block tracks the
+ * surrounding `prose` scale (prose-base -> prose-2xl) instead of fighting it,
+ * and so the `em`-based prose margins tighten proportionally with it.
+ *
+ * Applied as an inline style rather than a utility class on purpose. This
+ * library's CSS is scoped to `.tw-core-component` by postcss-prefix-selector,
+ * but consuming modules render our output in their own wrappers too (A1's
+ * Article, for one), where such a rule would silently not match. An inline
+ * style is wrapper-independent, and it is already how `textAlign` is applied
+ * a few lines below.
+ */
+const TEXT_SIZE_STYLE = {
+    small: '0.8em'
+};
+
+/**
+ * `em` sizing compounds when applied twice down one branch - a small list item
+ * holding a small paragraph would render at 0.64em. Each nested Render is told
+ * the size already applied above it, and a block only emits a size when it
+ * actually changes it.
+ */
+const textSizeStyle = (size, inherited) =>
+    (size && size !== inherited && TEXT_SIZE_STYLE[size]) || undefined;
+
 const Render = function (props) {
-    const { block: pageBlock, content, page } = props;
+    const { block: pageBlock, content, page, inheritedTextSize = null } = props;
 
     if (!content || !content.length) return null;
 
@@ -25,7 +50,10 @@ const Render = function (props) {
                     <p
                         key={index}
                         dangerouslySetInnerHTML={{ __html: content }}
-                        style={{ textAlign: alignment }}></p>
+                        style={{
+                            textAlign: alignment,
+                            fontSize: textSizeStyle(block.textSize, inheritedTextSize)
+                        }}></p>
                 );
             case 'heading':
                 const { level } = block;
@@ -52,9 +80,18 @@ const Render = function (props) {
                 return (
                     <ol key={index} className='list-decimal pl-5'>
                         {content.map((item, i) => {
+                            const itemSize = block.itemTextSizes?.[i] || null;
+
                             return (
-                                <li key={i}>
-                                    <Render content={item} />
+                                <li
+                                    key={i}
+                                    style={{
+                                        fontSize: textSizeStyle(itemSize, inheritedTextSize)
+                                    }}>
+                                    <Render
+                                        content={item}
+                                        inheritedTextSize={itemSize || inheritedTextSize}
+                                    />
                                 </li>
                             );
                         })}
@@ -64,9 +101,18 @@ const Render = function (props) {
                 return (
                     <ul key={index} className='list-disc pl-5'>
                         {content.map((item, i) => {
+                            const itemSize = block.itemTextSizes?.[i] || null;
+
                             return (
-                                <li key={i}>
-                                    <Render content={item} />
+                                <li
+                                    key={i}
+                                    style={{
+                                        fontSize: textSizeStyle(itemSize, inheritedTextSize)
+                                    }}>
+                                    <Render
+                                        content={item}
+                                        inheritedTextSize={itemSize || inheritedTextSize}
+                                    />
                                 </li>
                             );
                         })}
@@ -75,7 +121,7 @@ const Render = function (props) {
             case 'blockquote':
                 return (
                     <blockquote key={index}>
-                        <Render content={content} />
+                        <Render content={content} inheritedTextSize={inheritedTextSize} />
                     </blockquote>
                 );
 

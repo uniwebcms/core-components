@@ -257,6 +257,20 @@ function parseTableContent(content) {
     });
 }
 
+/**
+ * Predefined block text sizes an author can apply from the editor toolbar
+ * (see the editor's text-size extension). This is a closed set on purpose:
+ * authors pick a named style, never an arbitrary font size, so unknown values
+ * from pasted or legacy markup are ignored rather than trusted.
+ */
+const TEXT_SIZES = ['small'];
+
+const readTextSize = (attrs) => {
+    const size = attrs?.textSize;
+
+    return TEXT_SIZES.includes(size) ? size : null;
+};
+
 export const buildArticleBlocks = (articleContent) => {
     const { content: docContent } = articleContent;
 
@@ -281,7 +295,8 @@ export const buildArticleBlocks = (articleContent) => {
                     return {
                         type: 'paragraph',
                         content: content ? buildTextNode(content) : '<span>&nbsp;</span>',
-                        alignment: attrs?.textAlign
+                        alignment: attrs?.textAlign,
+                        textSize: readTextSize(attrs)
                     };
                 case 'DividerBlock':
                     return {
@@ -319,7 +334,10 @@ export const buildArticleBlocks = (articleContent) => {
                         type,
                         content: content.map((item) => {
                             return buildArticleBlocks(item);
-                        })
+                        }),
+                        // Parallel to `content`: the size each list item carries, so the
+                        // marker (bullet/number) can shrink with its text.
+                        itemTextSizes: content.map((item) => readTextSize(item.attrs))
                     };
                 case 'codeBlock':
                     return parseCodeBlock(content[0].text, attrs);
