@@ -5,6 +5,16 @@ import { InlineMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
 import Icon from '../Icon';
 
+/**
+ * Font size for each predefined text size carried by the editor's `textSize`
+ * inline mark. A closed set on purpose: authors pick a named style, never an
+ * arbitrary font size, so unknown values are ignored rather than trusted.
+ * Sized in `em` so it tracks the surrounding `prose` scale.
+ */
+const TEXT_SIZE_STYLE = {
+    small: '0.8em'
+};
+
 const buildTextNode = (content) => {
     let data = '';
 
@@ -21,6 +31,8 @@ const buildTextNode = (content) => {
 
         const textColor = marks.find((mark) => mark.type === 'textStyle')?.attrs?.color;
 
+        const textSize = marks.find((mark) => mark.type === 'textSize')?.attrs?.size;
+
         let linkProps = marks.filter((mark) => mark.type === 'link')?.[0]?.attrs;
 
         let linkHref = linkProps?.href;
@@ -33,6 +45,10 @@ const buildTextNode = (content) => {
 
         if (textColor) {
             textStyle += `color: var(--${textColor});`;
+        }
+
+        if (TEXT_SIZE_STYLE[textSize]) {
+            textStyle += `font-size: ${TEXT_SIZE_STYLE[textSize]};`;
         }
 
         textStyle = textStyle ? `style="${textStyle}"` : '';
@@ -257,20 +273,6 @@ function parseTableContent(content) {
     });
 }
 
-/**
- * Predefined block text sizes an author can apply from the editor toolbar
- * (see the editor's text-size extension). This is a closed set on purpose:
- * authors pick a named style, never an arbitrary font size, so unknown values
- * from pasted or legacy markup are ignored rather than trusted.
- */
-const TEXT_SIZES = ['small'];
-
-const readTextSize = (attrs) => {
-    const size = attrs?.textSize;
-
-    return TEXT_SIZES.includes(size) ? size : null;
-};
-
 export const buildArticleBlocks = (articleContent) => {
     const { content: docContent } = articleContent;
 
@@ -295,8 +297,7 @@ export const buildArticleBlocks = (articleContent) => {
                     return {
                         type: 'paragraph',
                         content: content ? buildTextNode(content) : '<span>&nbsp;</span>',
-                        alignment: attrs?.textAlign,
-                        textSize: readTextSize(attrs)
+                        alignment: attrs?.textAlign
                     };
                 case 'DividerBlock':
                     return {
@@ -334,10 +335,7 @@ export const buildArticleBlocks = (articleContent) => {
                         type,
                         content: content.map((item) => {
                             return buildArticleBlocks(item);
-                        }),
-                        // Parallel to `content`: the size each list item carries, so the
-                        // marker (bullet/number) can shrink with its text.
-                        itemTextSizes: content.map((item) => readTextSize(item.attrs))
+                        })
                     };
                 case 'codeBlock':
                     return parseCodeBlock(content[0].text, attrs);
