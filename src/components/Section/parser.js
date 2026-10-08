@@ -33,6 +33,11 @@ const buildTextNode = (content) => {
 
         const textSize = marks.find((mark) => mark.type === 'textSize')?.attrs?.size;
 
+        // Mutually exclusive with each other and with textSize in the editor, so
+        // at most one of these is set.
+        const isSuperscript = marks.some((mark) => mark.type === 'superscript');
+        const isSubscript = marks.some((mark) => mark.type === 'subscript');
+
         let linkProps = marks.filter((mark) => mark.type === 'link')?.[0]?.attrs;
 
         let linkHref = linkProps?.href;
@@ -64,6 +69,11 @@ const buildTextNode = (content) => {
                     : textStyle
                     ? `<span ${textStyle}>`
                     : '';
+
+            // Wrapped outside the style ladder and inside any link, so a
+            // superscript reference marker stays clickable.
+            if (isSuperscript) start = '<sup>' + start;
+            if (isSubscript) start = '<sub>' + start;
 
             if (!linkStart && linkHref) {
                 const external =
@@ -117,6 +127,9 @@ const buildTextNode = (content) => {
                     : textStyle
                     ? '</span>'
                     : '';
+
+            if (isSuperscript) end += '</sup>';
+            if (isSubscript) end += '</sub>';
 
             if (
                 linkStart &&
